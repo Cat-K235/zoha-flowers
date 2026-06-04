@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#f8f4f0" />
+  <title>Zoha Flowers</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+</head>
+<body>
+  <div id="app">
+    <div id="splash-screen" class="splash">
+      <div class="splash-logo">
+        <div class="splash-icon">🌸</div>
+        <h1 class="splash-title">Zoha Flowers</h1>
+        <p class="splash-subtitle">Premium Flower Boutique</p>
+      </div>
+    </div>
+
+    <header class="app-header" id="app-header">
+      <div class="header-inner">
+        <button class="btn-back" id="btn-back" style="display:none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+        </button>
+        <div class="header-logo" id="header-logo">
+          <span class="logo-icon">🌸</span>
+          <span class="logo-text">Zoha Flowers</span>
+        </div>
+        <div class="header-title" id="header-title" style="display:none"></div>
+        <div class="header-actions">
+          <button class="btn-icon" id="btn-search" data-page="search" title="Search">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </button>
+          <button class="btn-icon btn-lang" id="btn-lang" title="Language">
+            <span id="lang-label">UZ</span>
+          </button>
+          <button class="btn-icon cart-btn" id="btn-cart" data-page="cart" title="Cart">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+            <span class="cart-badge" id="cart-badge" style="display:none">0</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="app-main" id="app-main">
+      <!-- Pages rendered here -->
+    </main>
+
+    <nav class="bottom-nav" id="bottom-nav">
+      <button class="nav-item active" data-page="home">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        <span data-i18n="nav.home">Bosh sahifa</span>
+      </button>
+      <button class="nav-item" data-page="catalog">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+        <span data-i18n="nav.catalog">Katalog</span>
+      </button>
+      <button class="nav-item" data-page="builder">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 2L9 9H2l5.5 4-2 7L12 16l6.5 4-2-7L22 9h-7z"/></svg>
+        <span data-i18n="nav.builder">Bouquet</span>
+      </button>
+      <button class="nav-item" data-page="favorites">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/></svg>
+        <span data-i18n="nav.favorites">Sevimli</span>
+      </button>
+      <button class="nav-item" data-page="account">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span data-i18n="nav.account">Profil</span>
+      </button>
+    </nav>
+  </div>
+
+  <div id="toast-container"></div>
+  <div id="modal-overlay" class="modal-overlay" style="display:none">
+    <div id="modal-content" class="modal-content"></div>
+  </div>
+
+  <script src="js/i18n.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/telegram.js"></script>
+  <script src="js/router.js"></script>
+  <script src="js/pages/home.js"></script>
+  <script src="js/pages/catalog.js"></script>
+  <script src="js/pages/product.js"></script>
+  <script src="js/pages/cart.js"></script>
+  <script src="js/pages/checkout.js"></script>
+  <script src="js/pages/account.js"></script>
+  <script src="js/pages/favorites.js"></script>
+  <script src="js/pages/search.js"></script>
+  <script src="js/pages/builder.js"></script>
+  <script src="js/pages/orders.js"></script>
+  <script src="js/pages/admin.js"></script>
+  <script src="js/pages/contacts.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
