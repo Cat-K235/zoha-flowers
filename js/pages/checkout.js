@@ -159,6 +159,7 @@ function submitOrder() {
 
   const orderData = {
     orderId,
+    chatId: TG.getUser()?.id || null,
     items: Cart.getItems().map(i => ({
       name: i.product.name.uz,
       qty: i.qty,
