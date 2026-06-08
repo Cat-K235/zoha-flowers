@@ -126,12 +126,23 @@ function selectPayment(method, btn) {
 }
 
 function submitOrder() {
+  if (Cart.getCount() === 0) {
+    Toast.show(I18n.getLang() === 'uz' ? 'Savat bo\'sh' : I18n.getLang() === 'ru' ? 'Корзина пуста' : 'Cart is empty', 'error');
+    TG.haptic.error();
+    return;
+  }
+
   const address = document.getElementById('delivery-address')?.value.trim();
   const name    = document.getElementById('recipient-name')?.value.trim();
   const phone   = document.getElementById('recipient-phone')?.value.trim();
 
   if (!address) {
     Toast.show(I18n.getLang() === 'uz' ? 'Manzilni kiriting' : I18n.getLang() === 'ru' ? 'Введите адрес' : 'Enter delivery address', 'error');
+    TG.haptic.error();
+    return;
+  }
+  if (!name) {
+    Toast.show(I18n.getLang() === 'uz' ? 'Ism kiriting' : I18n.getLang() === 'ru' ? 'Введите имя' : 'Enter recipient name', 'error');
     TG.haptic.error();
     return;
   }

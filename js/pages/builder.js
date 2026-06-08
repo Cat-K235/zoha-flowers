@@ -25,7 +25,7 @@ Router.register('builder', () => {
       </div>
 
       <!-- Summary bar -->
-      <div id="builder-summary" style="display:none;margin:8px 16px;background:white;border-radius:var(--radius-lg);padding:12px 16px;box-shadow:var(--shadow-sm);display:flex;align-items:center;justify-content:space-between">
+      <div id="builder-summary" style="display:none;margin:8px 16px;background:white;border-radius:var(--radius-lg);padding:12px 16px;box-shadow:var(--shadow-sm);align-items:center;justify-content:space-between">
         <div>
           <span id="builder-count-text" style="font-size:14px;font-weight:600;color:var(--color-text)">0</span>
           <span style="font-size:13px;color:var(--color-text-mid)"> ${I18n.t('builder.count')}</span>

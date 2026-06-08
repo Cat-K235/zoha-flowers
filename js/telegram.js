@@ -82,7 +82,7 @@ const TG = (() => {
   const isAdmin = () => {
     const user = getUser();
     if (!user) return false;
-    const adminIds = [ADMIN_USER_ID, 7477812838];
+    const adminIds = [ADMIN_USER_ID];
     return adminIds.includes(user.id);
   };
 

@@ -36,6 +36,11 @@ const Router = (() => {
       main.innerHTML = content;
       main.scrollTop = 0;
 
+      // Trigger page-enter animation
+      main.classList.remove('page-enter');
+      void main.offsetWidth;
+      main.classList.add('page-enter');
+
       // Re-run i18n
       I18n.applyTranslations();
 
@@ -108,6 +113,17 @@ const Router = (() => {
 
   return { register, navigate, back, getCurrent, initClickHandlers };
 })();
+
+// HTML escape utility — use for any user-supplied content inserted via innerHTML
+const escapeHtml = (str) => {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+};
 
 // Toast notification utility
 const Toast = (() => {

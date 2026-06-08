@@ -56,7 +56,7 @@ Router.register('orders', () => {
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
         <div>
           <div style="font-weight:600;font-size:15px">#${order.orderId}</div>
-          <div style="font-size:12px;color:var(--color-text-light)">${order.date} • ${order.time || ''}</div>
+          <div style="font-size:12px;color:var(--color-text-light)">${escapeHtml(order.date)} • ${escapeHtml(order.time)}</div>
         </div>
         <div style="text-align:right">
           <div style="font-family:var(--font-serif);font-size:16px;color:var(--color-rose-dark)">${I18n.formatPrice(order.total)}</div>
@@ -65,7 +65,7 @@ Router.register('orders', () => {
           </div>
         </div>
       </div>
-      <div style="font-size:13px;color:var(--color-text-mid)">${order.address || ''}</div>
+      <div style="font-size:13px;color:var(--color-text-mid)">${escapeHtml(order.address)}</div>
       <div style="margin-top:12px">
         ${renderTrackingMini(order.status || 0)}
       </div>
@@ -135,7 +135,7 @@ function showOrderTracking(orderId) {
     <div style="padding:0 20px 8px">
       <div style="background:var(--color-beige);border-radius:var(--radius-md);padding:12px 14px">
         <div style="font-size:12px;color:var(--color-text-light);margin-bottom:4px">${I18n.t('checkout.address')}</div>
-        <div style="font-size:14px">${order.address}</div>
+        <div style="font-size:14px">${escapeHtml(order.address)}</div>
       </div>
     </div>
   `);

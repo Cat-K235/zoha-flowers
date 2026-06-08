@@ -58,10 +58,9 @@ const Cart = (() => {
   };
 
   const getDiscount = () => {
-    let discount = 0;
-    if (firstOrderDiscount) discount += getSubtotal() * 0.10;
-    if (appliedPromo) discount += getSubtotal() * (PROMO_CODES[appliedPromo] / 100);
-    return Math.round(discount);
+    const firstDiscount = firstOrderDiscount ? getSubtotal() * 0.10 : 0;
+    const promoDiscount = appliedPromo ? getSubtotal() * (PROMO_CODES[appliedPromo] / 100) : 0;
+    return Math.round(Math.max(firstDiscount, promoDiscount));
   };
 
   const getTotal = () => getSubtotal() + getDelivery() - getDiscount();

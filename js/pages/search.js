@@ -115,12 +115,5 @@ function updateSearchResults(results, query) {
     return;
   }
 
-  const highlighted = query
-    ? results.map(p => {
-        const c = { ...p };
-        return c;
-      })
-    : results;
-
-  container.innerHTML = highlighted.map(p => renderProductCard(p)).join('');
+  container.innerHTML = results.map(p => renderProductCard(p)).join('');
 }

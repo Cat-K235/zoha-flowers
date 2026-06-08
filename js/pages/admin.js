@@ -3,6 +3,10 @@
    ============================================ */
 
 Router.register('admin', () => {
+  if (!TG.isAdmin()) {
+    return '<div class="page page-top-pad text-center" style="padding:40px"><p>Access denied</p></div>';
+  }
+
   const lang = I18n.getLang();
   const orders = JSON.parse(localStorage.getItem('zf_orders') || '[]');
   const todayOrders = orders.filter(o => o.date === new Date().toISOString().split('T')[0]);
@@ -77,7 +81,7 @@ function renderAdminOrderRow(order, lang) {
       <div style="display:flex;justify-content:space-between;align-items:center">
         <div>
           <div style="font-weight:600;font-size:14px">#${order.orderId}</div>
-          <div style="font-size:12px;color:var(--color-text-light)">${order.recipientName || ''} • ${order.phone || ''}</div>
+          <div style="font-size:12px;color:var(--color-text-light)">${escapeHtml(order.recipientName)} • ${escapeHtml(order.phone)}</div>
         </div>
         <div style="text-align:right">
           <div style="font-family:var(--font-serif);font-size:15px;color:var(--color-rose-dark)">${I18n.formatPrice(order.total)}</div>
