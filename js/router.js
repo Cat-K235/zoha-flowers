@@ -36,11 +36,6 @@ const Router = (() => {
       main.innerHTML = content;
       main.scrollTop = 0;
 
-      // Trigger page-enter animation
-      main.classList.remove('page-enter');
-      void main.offsetWidth;
-      main.classList.add('page-enter');
-
       // Re-run i18n
       I18n.applyTranslations();
 

@@ -19,13 +19,13 @@ Router.register('builder', () => {
 
       <!-- Canvas -->
       <div class="builder-canvas" id="builder-canvas">
-        <div id="builder-preview" style="font-size:72px;letter-spacing:-8px;text-align:center;min-height:80px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px">
-          <span style="font-size:24px;color:rgba(0,0,0,0.3)" data-i18n="builder.canvas">${I18n.t('builder.canvas')}</span>
+        <div id="builder-preview" style="min-height:80px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;text-align:center;width:100%">
+          <span style="font-size:15px;color:var(--color-text-light);letter-spacing:0" data-i18n="builder.canvas">${I18n.t('builder.canvas')}</span>
         </div>
       </div>
 
       <!-- Summary bar -->
-      <div id="builder-summary" style="display:none;margin:8px 16px;background:white;border-radius:var(--radius-lg);padding:12px 16px;box-shadow:var(--shadow-sm);align-items:center;justify-content:space-between">
+      <div id="builder-summary" class="builder-summary-bar" style="display:none;margin:8px 16px;background:white;border-radius:var(--radius-lg);padding:12px 16px;box-shadow:var(--shadow-sm)">
         <div>
           <span id="builder-count-text" style="font-size:14px;font-weight:600;color:var(--color-text)">0</span>
           <span style="font-size:13px;color:var(--color-text-mid)"> ${I18n.t('builder.count')}</span>
