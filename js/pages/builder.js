@@ -20,7 +20,7 @@ Router.register('builder', () => {
       <!-- Canvas -->
       <div class="builder-canvas" id="builder-canvas">
         <div id="builder-preview" style="min-height:80px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:4px;text-align:center;width:100%">
-          <span style="font-size:15px;color:var(--color-text-light);letter-spacing:0" data-i18n="builder.canvas">${I18n.t('builder.canvas')}</span>
+          <span class="builder-placeholder" data-i18n="builder.canvas">${I18n.t('builder.canvas')}</span>
         </div>
       </div>
 
@@ -109,7 +109,7 @@ function updateBuilderUI() {
   const preview = document.getElementById('builder-preview');
   if (preview) {
     if (previewEmojis.length === 0) {
-      preview.innerHTML = `<span style="font-size:24px;color:rgba(0,0,0,0.3)">${I18n.t('builder.canvas')}</span>`;
+      preview.innerHTML = `<span class="builder-placeholder">${I18n.t('builder.canvas')}</span>`;
     } else {
       preview.innerHTML = previewEmojis
         .map((e, i) => `<span class="builder-flower stagger-${Math.min(i + 1, 6)}" style="font-size:${Math.max(32, 60 - previewEmojis.length * 2)}px">${e}</span>`)

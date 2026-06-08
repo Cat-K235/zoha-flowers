@@ -1188,6 +1188,14 @@ html, body {
   margin: -3px;
   display: inline-block;
 }
+.builder-placeholder {
+  font-size: 14px !important;
+  letter-spacing: normal !important;
+  color: var(--color-text-mid);
+  text-align: center;
+  line-height: 1.6;
+  padding: 8px;
+}
 .builder-summary-bar {
   display: flex;
   align-items: center;
