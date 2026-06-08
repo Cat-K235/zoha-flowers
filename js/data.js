@@ -255,7 +255,7 @@ const BUILDER_FLOWERS = [
   { id: 'lavender',emoji: '🪻', name: { uz: "Lavanda",  ru: "Лаванда", en: "Lavender"},price: 9000  },
 ];
 
-const ADMIN_USER_ID = 7477812838; // @zohid7 Telegram ID (approximate)
+const ADMIN_USER_ID = 7498042030;
 
 const getProductById = (id) => PRODUCTS.find(p => p.id === Number(id));
 const getProductsByCategory = (cat) => cat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === cat);
