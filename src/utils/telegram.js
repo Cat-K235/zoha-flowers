@@ -1,0 +1,48 @@
+import { ADMIN_USER_ID } from '../data/products'
+
+const tg = window.Telegram?.WebApp
+
+export function initTelegram() {
+  if (!tg) return
+  tg.ready()
+  tg.expand()
+  if (tg.colorScheme === 'dark') {
+    document.body.classList.add('tg-dark')
+  }
+  try {
+    tg.setHeaderColor('#fdf8f3')
+    tg.setBackgroundColor('#fdf8f3')
+  } catch (_) {}
+}
+
+export function getTelegramUser() {
+  return tg?.initDataUnsafe?.user || null
+}
+
+export function checkIsAdmin(userId) {
+  return userId === ADMIN_USER_ID
+}
+
+export const haptic = {
+  light:   () => tg?.HapticFeedback?.impactOccurred('light'),
+  medium:  () => tg?.HapticFeedback?.impactOccurred('medium'),
+  heavy:   () => tg?.HapticFeedback?.impactOccurred('heavy'),
+  success: () => tg?.HapticFeedback?.notificationOccurred('success'),
+  error:   () => tg?.HapticFeedback?.notificationOccurred('error'),
+  warning: () => tg?.HapticFeedback?.notificationOccurred('warning'),
+  select:  () => tg?.HapticFeedback?.selectionChanged(),
+}
+
+export function sendOrderToBot(orderData) {
+  if (!tg) return
+  const data = JSON.stringify({ type: 'order', ...orderData })
+  tg.sendData(data)
+}
+
+export function openLink(url) {
+  if (tg) { tg.openLink(url) } else { window.open(url, '_blank') }
+}
+
+export function openTelegramLink(url) {
+  if (tg) { tg.openTelegramLink(url) } else { window.open(url, '_blank') }
+}
