@@ -22,6 +22,7 @@ import Search from './pages/Search'
 import Orders from './pages/Orders'
 import Admin from './pages/Admin'
 import Contacts from './pages/Contacts'
+import Addresses from './pages/Addresses'
 
 const HIDE_NAV = ['/checkout', '/search', '/order-success']
 
@@ -48,6 +49,7 @@ function AppShell() {
           <Route path="/orders"        element={<Orders />} />
           <Route path="/admin"         element={<Admin />} />
           <Route path="/contacts"      element={<Contacts />} />
+          <Route path="/addresses"     element={<Addresses />} />
         </Routes>
       </main>
       {showNav && <BottomNav />}

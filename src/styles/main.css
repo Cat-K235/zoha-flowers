@@ -1029,6 +1029,7 @@ html, body {
   font-size: 28px;
   border: 3px solid white;
   box-shadow: var(--shadow-md);
+  overflow: hidden;
   flex-shrink: 0;
 }
 .account-name { font-family: var(--font-serif); font-size: 22px; font-weight: 500; }

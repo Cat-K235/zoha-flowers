@@ -14,18 +14,13 @@ export default function Builder() {
   const totalFlowers = Object.values(counts).reduce((s, v) => s + v, 0)
   const totalPrice   = BUILDER_FLOWERS.reduce((s, f) => s + (counts[f.id] || 0) * f.price, 0)
 
-  const addFlower = useCallback((id) => {
-    if ((counts[id] || 0) >= 10) return
-    setCounts(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }))
-    haptic.light?.()
-  }, [counts])
-
-  const removeFlower = useCallback((id) => {
+  const toggleFlower = useCallback((id) => {
     setCounts(prev => {
-      const n = (prev[id] || 0) - 1
-      if (n <= 0) { const { [id]: _, ...rest } = prev; return rest }
-      return { ...prev, [id]: n }
+      const next = (prev[id] || 0) + 1
+      if (next > 10) { const { [id]: _, ...rest } = prev; return rest }
+      return { ...prev, [id]: next }
     })
+    haptic.light?.()
   }, [])
 
   const clear = () => { setCounts({}); haptic.light?.() }
@@ -85,8 +80,7 @@ export default function Builder() {
             <div
               key={f.id}
               className={`flower-option${cnt > 0 ? ' selected' : ''}`}
-              onClick={() => addFlower(f.id)}
-              onContextMenu={e => { e.preventDefault(); removeFlower(f.id) }}
+              onClick={() => toggleFlower(f.id)}
             >
               {cnt > 0 && <span className="flower-count">{cnt}</span>}
               <span className="flower-emoji">{f.emoji}</span>
