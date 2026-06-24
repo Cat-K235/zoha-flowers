@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useCart } from '../contexts/CartContext'
 import { useI18n } from '../contexts/I18nContext'
 import { useToast } from '../contexts/ToastContext'
+import { useTelegram } from '../contexts/TelegramContext'
 import { haptic } from '../utils/telegram'
 
 export default function ProductCard({ product, scroll = false }) {
@@ -10,6 +11,7 @@ export default function ProductCard({ product, scroll = false }) {
   const { add, toggleFav, isFav } = useCart()
   const { lang, formatPrice } = useI18n()
   const { showToast } = useToast()
+  const { isAdmin } = useTelegram()
 
   const name = product.name[lang] || product.name.uz
   const fav = isFav(product.id)
@@ -24,6 +26,12 @@ export default function ProductCard({ product, scroll = false }) {
   const handleFav = (e) => {
     e.stopPropagation()
     toggleFav(product.id)
+    haptic.light?.()
+  }
+
+  const handleEdit = (e) => {
+    e.stopPropagation()
+    navigate(`/admin?edit=${product.id}`)
     haptic.light?.()
   }
 
@@ -43,6 +51,9 @@ export default function ProductCard({ product, scroll = false }) {
         <button className={`btn-fav${fav ? ' active' : ''}`} onClick={handleFav}>
           {fav ? '❤️' : '🤍'}
         </button>
+        {isAdmin && (
+          <button className="btn-admin-edit" onClick={handleEdit}>✏️</button>
+        )}
       </div>
       <div className="product-info">
         <div className="product-name">{name}</div>

@@ -540,6 +540,26 @@ html, body {
 .btn-fav:active { transform: scale(0.85); }
 .btn-fav.active { background: var(--color-rose-light); }
 
+.btn-admin-edit {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: rgba(255,255,255,0.92);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: transform var(--transition);
+  z-index: 2;
+}
+.btn-admin-edit:active { transform: scale(0.85); }
+
 .product-info { padding: 10px 12px 12px; }
 .product-name {
   font-size: 13px;

@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useI18n } from '../contexts/I18nContext'
 import { useTelegram } from '../contexts/TelegramContext'
 import { useProducts } from '../contexts/ProductContext'
@@ -30,12 +31,32 @@ export default function Admin() {
   const { isAdmin } = useTelegram()
   const { products, addProduct, updateProduct, deleteProduct } = useProducts()
   const { showToast } = useToast()
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const [view, setView] = useState('dashboard')
   const [editingProduct, setEditingProduct] = useState(null)
   const [formData, setFormData] = useState(EMPTY_PRODUCT)
   const [compositionInput, setCompositionInput] = useState('')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
+
+  useEffect(() => {
+    const editId = searchParams.get('edit')
+    if (editId) {
+      const product = products.find(p => p.id === Number(editId))
+      if (product) {
+        setEditingProduct(product)
+        setFormData({
+          ...product,
+          price: String(product.price),
+          oldPrice: product.oldPrice ? String(product.oldPrice) : '',
+          badge: product.badge || '',
+        })
+        setCompositionInput(product.composition.join(', '))
+        setView('form')
+      }
+      setSearchParams({}, { replace: true })
+    }
+  }, [searchParams])
 
   const orders = JSON.parse(localStorage.getItem('zf_orders') || '[]')
   const todayTotal = orders.filter(o => o.date === new Date().toISOString().split('T')[0]).reduce((s, o) => s + o.total, 0)
