@@ -16,7 +16,7 @@ export default function SplashScreen({ onDone }) {
       <div className="splash-logo">
         <img
           className="splash-img"
-          src="/zoha-logo.png"
+          src="./zoha-logo.png"
           alt="Zoha Flowers"
           onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block' }}
         />

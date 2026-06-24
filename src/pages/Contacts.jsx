@@ -37,7 +37,7 @@ export default function Contacts() {
       {/* Logo header */}
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 16px 8px' }}>
         <img
-          src="/zoha-logo.png"
+          src="./zoha-logo.png"
           alt="Zoha Flowers"
           style={{ width: 100, height: 100, objectFit: 'contain', borderRadius: 16, marginBottom: 12 }}
           onError={e => { e.target.style.display = 'none' }}
