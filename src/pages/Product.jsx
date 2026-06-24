@@ -4,7 +4,7 @@ import { useI18n } from '../contexts/I18nContext'
 import { useCart } from '../contexts/CartContext'
 import { useToast } from '../contexts/ToastContext'
 import { haptic } from '../utils/telegram'
-import { getProductById, PRODUCTS } from '../data/products'
+import { useProducts } from '../contexts/ProductContext'
 import ProductCard from '../components/ProductCard'
 
 export default function Product() {
@@ -13,6 +13,7 @@ export default function Product() {
   const { lang, t, formatPrice } = useI18n()
   const { add } = useCart()
   const { showToast } = useToast()
+  const { getProductById, products } = useProducts()
   const [qty, setQty] = useState(1)
   const [imgIdx, setImgIdx] = useState(0)
 
@@ -36,7 +37,7 @@ export default function Product() {
     navigate('/checkout')
   }
 
-  const similar = PRODUCTS.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4)
+  const similar = products.filter(p => p.category === product.category && p.id !== product.id).slice(0, 4)
 
   return (
     <div className="page">

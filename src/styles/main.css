@@ -1303,6 +1303,315 @@ html, body {
 .admin-card-label { font-size: 13px; font-weight: 600; color: var(--color-text); }
 .admin-card-count { font-size: 11px; color: var(--color-text-light); margin-top: 2px; }
 
+/* Admin Management */
+.admin-topbar {
+  display: flex;
+  align-items: center;
+  padding: 12px 16px;
+  gap: 12px;
+}
+.admin-back-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--color-beige);
+  color: var(--color-text);
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition);
+}
+.admin-back-btn:active { background: var(--color-beige-mid); }
+.admin-page-title {
+  flex: 1;
+  font-family: var(--font-serif);
+  font-size: 20px;
+  font-weight: 500;
+  text-align: center;
+}
+.admin-add-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  border: none;
+  background: var(--color-rose-dark);
+  color: white;
+  font-size: 22px;
+  font-weight: 300;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform var(--transition);
+}
+.admin-add-btn:active { transform: scale(0.92); }
+
+.admin-product-list {
+  padding: 0 16px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.admin-product-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  padding: 12px 14px;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+}
+.admin-product-emoji {
+  width: 42px;
+  height: 42px;
+  background: var(--color-beige);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  flex-shrink: 0;
+}
+.admin-product-info {
+  flex: 1;
+  min-width: 0;
+}
+.admin-product-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.admin-product-price {
+  font-size: 12px;
+  color: var(--color-rose-dark);
+  font-weight: 500;
+  margin-top: 2px;
+}
+.admin-product-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.admin-action-btn {
+  width: 34px;
+  height: 34px;
+  border-radius: var(--radius-sm);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: transform var(--transition), background var(--transition);
+}
+.admin-action-btn.edit { background: var(--color-beige); }
+.admin-action-btn.delete { background: #fde8e8; }
+.admin-action-btn:active { transform: scale(0.9); }
+
+/* Admin Form */
+.admin-form {
+  padding: 0 16px 32px;
+}
+.admin-form-section {
+  margin-bottom: 20px;
+}
+.admin-form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--color-text-mid);
+  margin-bottom: 8px;
+}
+.admin-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.admin-form-row {
+  display: flex;
+  gap: 10px;
+}
+.admin-form-row .admin-input { flex: 1; }
+.admin-input-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.admin-input-tag {
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--color-gold-light);
+  font-size: 10px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-text);
+  flex-shrink: 0;
+}
+.admin-input-row .admin-input,
+.admin-input-row .admin-textarea { flex: 1; }
+.admin-input {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--color-beige-mid);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  background: white;
+  color: var(--color-text);
+  transition: border-color var(--transition);
+  outline: none;
+}
+.admin-input:focus { border-color: var(--color-rose); }
+.admin-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--color-beige-mid);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  background: white;
+  color: var(--color-text);
+  resize: vertical;
+  min-height: 60px;
+  transition: border-color var(--transition);
+  outline: none;
+}
+.admin-textarea:focus { border-color: var(--color-rose); }
+.admin-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--color-beige-mid);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  background: white;
+  color: var(--color-text);
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%237a6a65'%3E%3Cpath d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 14px center;
+}
+
+.admin-emoji-picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.admin-emoji-option {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--color-beige-mid);
+  background: white;
+  font-size: 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+.admin-emoji-option.active {
+  border-color: var(--color-rose-dark);
+  background: var(--color-rose-light);
+  transform: scale(1.1);
+}
+
+.admin-badge-picker {
+  display: flex;
+  gap: 8px;
+}
+.admin-badge-option {
+  padding: 8px 16px;
+  border-radius: var(--radius-full);
+  border: 1.5px solid var(--color-beige-mid);
+  background: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.admin-badge-option.active {
+  border-color: var(--color-rose-dark);
+  background: var(--color-rose-light);
+  color: var(--color-rose-dark);
+}
+
+.admin-flags {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.admin-flag-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  background: white;
+  border-radius: var(--radius-sm);
+  border: 1.5px solid var(--color-beige-mid);
+  cursor: pointer;
+  transition: all var(--transition);
+}
+.admin-flag-item:has(input:checked) {
+  border-color: var(--color-rose);
+  background: var(--color-rose-light);
+}
+.admin-flag-item input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--color-rose-dark);
+}
+.admin-flag-label {
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.admin-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  padding-bottom: 16px;
+}
+.admin-form-btn {
+  flex: 1;
+  padding: 14px 20px;
+  border-radius: var(--radius-md);
+  font-size: 14px;
+  font-weight: 600;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border: none;
+  transition: all var(--transition);
+}
+.admin-form-btn.primary {
+  background: var(--color-rose-dark);
+  color: white;
+}
+.admin-form-btn.primary:active { transform: scale(0.97); opacity: 0.9; }
+.admin-form-btn.secondary {
+  background: var(--color-beige);
+  color: var(--color-text);
+}
+.admin-form-btn.secondary:active { background: var(--color-beige-mid); }
+.admin-form-btn.danger {
+  background: var(--color-error);
+  color: white;
+}
+.admin-form-btn.danger:active { transform: scale(0.97); opacity: 0.9; }
+
 .stats-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);

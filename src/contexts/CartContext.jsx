@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback } from 'react'
+import { useProducts } from './ProductContext'
 
 const STORAGE_KEY = 'zf_cart'
 const FAV_KEY = 'zf_favorites'
@@ -6,7 +7,8 @@ const PROMO_CODES = { 'ZOHA10': 10, 'WELCOME': 15, 'SPRING24': 20 }
 
 const CartContext = createContext(null)
 
-export function CartProvider({ children, products }) {
+export function CartProvider({ children }) {
+  const { products } = useProducts()
   const [items, setItems] = useState(() => JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'))
   const [favorites, setFavorites] = useState(() => JSON.parse(localStorage.getItem(FAV_KEY) || '[]'))
   const [appliedPromo, setAppliedPromo] = useState(null)

@@ -4,7 +4,7 @@ import { I18nProvider } from './contexts/I18nContext'
 import { CartProvider } from './contexts/CartContext'
 import { TelegramProvider } from './contexts/TelegramContext'
 import { ToastProvider } from './contexts/ToastContext'
-import { PRODUCTS } from './data/products'
+import { ProductProvider } from './contexts/ProductContext'
 import SplashScreen from './components/SplashScreen'
 import Header from './components/Header'
 import BottomNav from './components/BottomNav'
@@ -64,14 +64,16 @@ export default function App() {
   return (
     <I18nProvider>
       <TelegramProvider>
-        <CartProvider products={PRODUCTS}>
-          <ToastProvider>
-            <HashRouter>
-              {!splashDone && <SplashScreen onDone={() => setSplashDone(true)} />}
-              <AppShell />
-            </HashRouter>
-          </ToastProvider>
-        </CartProvider>
+        <ProductProvider>
+          <CartProvider>
+            <ToastProvider>
+              <HashRouter>
+                {!splashDone && <SplashScreen onDone={() => setSplashDone(true)} />}
+                <AppShell />
+              </HashRouter>
+            </ToastProvider>
+          </CartProvider>
+        </ProductProvider>
       </TelegramProvider>
     </I18nProvider>
   )

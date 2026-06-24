@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { useI18n } from '../contexts/I18nContext'
-import { CATEGORIES, getProductsByCategory } from '../data/products'
+import { useProducts } from '../contexts/ProductContext'
 import ProductCard from '../components/ProductCard'
 
 export default function Catalog() {
@@ -9,6 +9,7 @@ export default function Catalog() {
   const initCat = searchParams.get('cat') || 'all'
   const [activeCategory, setActiveCategory] = useState(initCat)
   const { t } = useI18n()
+  const { getProductsByCategory, categories } = useProducts()
 
   useEffect(() => {
     const cat = searchParams.get('cat') || 'all'
@@ -21,7 +22,7 @@ export default function Catalog() {
     <div className="page page-top-pad">
       {/* Category filter */}
       <div className="filter-row" style={{ paddingBottom: 16 }}>
-        {CATEGORIES.map(cat => (
+        {categories.map(cat => (
           <button
             key={cat.id}
             className={`filter-chip${activeCategory === cat.id ? ' active' : ''}`}

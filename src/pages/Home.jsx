@@ -2,7 +2,8 @@ import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../contexts/I18nContext'
 import { useCart } from '../contexts/CartContext'
-import { CATEGORIES, REVIEWS, getFeatured, getBestSellers, getNewArrivals, getSeasonal } from '../data/products'
+import { useProducts } from '../contexts/ProductContext'
+import { REVIEWS } from '../data/products'
 import ProductCard from '../components/ProductCard'
 import { openLink } from '../utils/telegram'
 
@@ -30,6 +31,7 @@ export default function Home() {
   const navigate = useNavigate()
   const { t, lang } = useI18n()
   const { isFirstOrder } = useCart()
+  const { categories, getFeatured, getBestSellers, getNewArrivals, getSeasonal } = useProducts()
 
   const reviewsTitle = lang === 'ru' ? 'Отзывы клиентов' : lang === 'en' ? 'Customer Reviews' : 'Mijozlar sharhlari'
   const contactBtn  = lang === 'ru' ? 'Связаться' : lang === 'en' ? 'Contact Us' : 'Aloqa'
@@ -69,7 +71,7 @@ export default function Home() {
       {/* Category pills */}
       <section className="section">
         <div className="categories-scroll">
-          {CATEGORIES.filter(c => c.id !== 'all').map(cat => (
+          {categories.filter(c => c.id !== 'all').map(cat => (
             <div key={cat.id} className="category-pill" onClick={() => navigate(`/catalog?cat=${cat.id}`)}>
               <div className="pill-icon">{cat.emoji}</div>
               <span className="pill-label">{t(cat.nameKey, cat.name)}</span>

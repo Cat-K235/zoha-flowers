@@ -1,12 +1,13 @@
 import React, { useState, useMemo } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useI18n } from '../contexts/I18nContext'
-import { CATEGORIES, searchProducts, getProductsByCategory } from '../data/products'
+import { useProducts } from '../contexts/ProductContext'
 import ProductCard from '../components/ProductCard'
 
 export default function Search() {
   const navigate = useNavigate()
   const { t } = useI18n()
+  const { categories, searchProducts, getProductsByCategory } = useProducts()
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('all')
 
@@ -40,7 +41,7 @@ export default function Search() {
 
       {/* Category filter */}
       <div className="filter-row">
-        {CATEGORIES.map(cat => (
+        {categories.map(cat => (
           <button
             key={cat.id}
             className={`filter-chip${category === cat.id ? ' active' : ''}`}
