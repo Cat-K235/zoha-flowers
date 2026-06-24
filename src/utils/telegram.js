@@ -10,7 +10,7 @@ export function initTelegram() {
     document.body.classList.add('tg-dark')
   }
   try {
-    tg.setHeaderColor('#fdf8f3')
+    tg.setHeaderColor('#d4726f')
     tg.setBackgroundColor('#fdf8f3')
   } catch (_) {}
 }
