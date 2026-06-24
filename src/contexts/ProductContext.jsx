@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect } from 'react'
 import { PRODUCTS as DEFAULT_PRODUCTS, CATEGORIES } from '../data/products'
-import { supabase } from '../utils/supabase'
+import { db } from '../utils/supabase'
 
 const ProductContext = createContext(null)
 const LOCAL_KEY = 'zf_products'
@@ -15,26 +15,21 @@ function loadLocal() {
 
 export function ProductProvider({ children }) {
   const [products, setProducts] = useState(loadLocal)
-  const [loaded, setLoaded] = useState(false)
 
   useEffect(() => {
-    if (!supabase) { setLoaded(true); return }
-    supabase.from('products').select('data').eq('id', 1).single()
-      .then(({ data, error }) => {
-        if (!error && data && data.data) {
-          setProducts(data.data)
-          localStorage.setItem(LOCAL_KEY, JSON.stringify(data.data))
-        }
-        setLoaded(true)
-      })
+    if (!db) return
+    db.loadProducts().then(data => {
+      if (data && data.length > 0) {
+        setProducts(data)
+        localStorage.setItem(LOCAL_KEY, JSON.stringify(data))
+      }
+    })
   }, [])
 
   const persist = useCallback((updated) => {
     setProducts(updated)
     localStorage.setItem(LOCAL_KEY, JSON.stringify(updated))
-    if (supabase) {
-      supabase.from('products').upsert({ id: 1, data: updated }).then()
-    }
+    if (db) db.saveProducts(updated)
   }, [])
 
   const addProduct = useCallback((product) => {
@@ -72,7 +67,7 @@ export function ProductProvider({ children }) {
 
   return (
     <ProductContext.Provider value={{
-      products, loaded, addProduct, updateProduct, deleteProduct,
+      products, addProduct, updateProduct, deleteProduct,
       getProductById, getProductsByCategory,
       getFeatured, getBestSellers, getNewArrivals, getSeasonal, searchProducts,
       categories: CATEGORIES,
