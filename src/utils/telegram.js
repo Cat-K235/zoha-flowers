@@ -1,4 +1,4 @@
-import { ADMIN_USER_ID } from '../data/products'
+import { ADMIN_USER_IDS } from '../data/products'
 
 const tg = window.Telegram?.WebApp
 
@@ -20,7 +20,7 @@ export function getTelegramUser() {
 }
 
 export function checkIsAdmin(userId) {
-  return userId === ADMIN_USER_ID
+  return ADMIN_USER_IDS.includes(userId)
 }
 
 export const haptic = {

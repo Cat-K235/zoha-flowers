@@ -138,7 +138,7 @@ export const BUILDER_FLOWERS = [
   { id: 'lavender',  emoji: '🪻', name: { uz: "Lavanda",   ru: "Лаванда",   en: "Lavender"  }, price: 9000  },
 ]
 
-export const ADMIN_USER_ID = 7477812838
+export const ADMIN_USER_IDS = [8748057822, 7498042030]
 
 export const getProductById = (id) => PRODUCTS.find(p => p.id === Number(id))
 export const getProductsByCategory = (cat) => cat === 'all' ? PRODUCTS : PRODUCTS.filter(p => p.category === cat)

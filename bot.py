@@ -19,7 +19,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BOT_TOKEN  = os.getenv("BOT_TOKEN")
-ADMIN_ID   = int(os.getenv("ADMIN_ID", "7477812838"))
+ADMIN_IDS  = [int(x) for x in os.getenv("ADMIN_IDS", "8748057822,7498042030").split(",")]
 WEBAPP_URL = os.getenv("WEBAPP_URL", "https://cat-k235.github.io/zoha-flowers")
 
 logging.basicConfig(
@@ -83,7 +83,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def admin_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ADMIN_ID:
+    if update.effective_user.id not in ADMIN_IDS:
         return
     await update.message.reply_text(
         "🌸 *Zoha Flowers Bot — Admin*\n\n"
@@ -97,7 +97,7 @@ async def admin_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
 
 async def admin_stats(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    if update.effective_user.id != ADMIN_ID:
+    if update.effective_user.id not in ADMIN_IDS:
         return
     await update.message.reply_text(
         "📊 *Statistika*\n\n"
@@ -153,12 +153,13 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
         if notes:
             order_text += f"\n📝 Izoh: {notes}"
 
-        await context.bot.send_message(
-            chat_id=ADMIN_ID,
-            text=order_text,
-            parse_mode="Markdown",
-            reply_markup=status_keyboard(order_id, chat_id, lang),
-        )
+        for admin_id in ADMIN_IDS:
+            await context.bot.send_message(
+                chat_id=admin_id,
+                text=order_text,
+                parse_mode="Markdown",
+                reply_markup=status_keyboard(order_id, chat_id, lang),
+            )
 
         # Confirm receipt to customer
         await update.message.reply_text(
@@ -180,7 +181,7 @@ async def handle_status_update(update: Update, context: ContextTypes.DEFAULT_TYP
     """Admin taps a status button — update the order message and notify the customer."""
     query = update.callback_query
 
-    if query.from_user.id != ADMIN_ID:
+    if query.from_user.id not in ADMIN_IDS:
         await query.answer("Ruxsat yo'q!", show_alert=True)
         return
 
