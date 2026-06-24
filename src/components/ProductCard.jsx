@@ -42,7 +42,11 @@ export default function ProductCard({ product, scroll = false }) {
       onClick={() => navigate(`/product/${product.id}`)}
     >
       <div className="product-img">
-        <span>{product.emoji}</span>
+        {product.image ? (
+          <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+        ) : (
+          <span>{product.emoji}</span>
+        )}
         {product.badge && (
           <span className={`product-badge ${product.badge}`}>
             {product.badge === 'new' ? 'NEW' : 'SALE'}

@@ -24,7 +24,8 @@ export default function Product() {
 
   const name = product.name[lang] || product.name.uz
   const desc = product.desc[lang] || product.desc.uz
-  const images = [product.emoji, '💐', '🌸']
+  const hasImage = !!product.image
+  const images = hasImage ? [product.image] : [product.emoji, '💐', '🌸']
 
   const handleAdd = () => {
     add(product.id, qty)
@@ -43,7 +44,13 @@ export default function Product() {
     <div className="page">
       {/* Gallery */}
       <div className="product-gallery">
-        <div className="gallery-main">{images[imgIdx]}</div>
+        <div className="gallery-main">
+          {hasImage ? (
+            <img src={images[imgIdx]} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+          ) : (
+            images[imgIdx]
+          )}
+        </div>
         <div className="gallery-dots">
           {images.map((_, i) => (
             <button key={i} className={`gallery-dot${imgIdx === i ? ' active' : ''}`} onClick={() => setImgIdx(i)} />

@@ -14,6 +14,7 @@ const EMPTY_PRODUCT = {
   oldPrice: '',
   category: 'bouquets',
   emoji: '🌸',
+  image: null,
   badge: '',
   rating: 4.5,
   reviews: 0,
@@ -22,6 +23,13 @@ const EMPTY_PRODUCT = {
   bestseller: false,
   newArrival: false,
   seasonal: false,
+}
+
+const S = {
+  label: { display: 'block', fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: 1, color: '#c9a96e', marginBottom: 8 },
+  tag: { width: 30, height: 30, borderRadius: 6, background: '#c9a96e', fontSize: 10, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', flexShrink: 0 },
+  input: { flex: 1, padding: '12px 14px', border: '1.5px solid #ecddd0', borderRadius: 8, fontSize: 14, background: '#fff', color: '#3a2e2e', outline: 'none' },
+  textarea: { flex: 1, padding: '12px 14px', border: '1.5px solid #ecddd0', borderRadius: 8, fontSize: 14, background: '#fff', color: '#3a2e2e', outline: 'none', resize: 'vertical', minHeight: 60, fontFamily: 'inherit' },
 }
 
 const EMOJI_OPTIONS = ['🌹', '🌸', '🌷', '🌻', '🌺', '🌼', '💐', '🪻', '🤍', '💜', '🏵️', '🌿', '🎁', '💍']
@@ -218,7 +226,9 @@ export default function Admin() {
         <div className="admin-product-list">
           {products.map(product => (
             <div key={product.id} className="admin-product-item">
-              <div className="admin-product-emoji">{product.emoji}</div>
+              <div className="admin-product-emoji">
+                {product.image ? <img src={product.image} alt="" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: 6 }} /> : product.emoji}
+              </div>
               <div className="admin-product-info">
                 <div className="admin-product-name">{product.name[lang] || product.name.uz}</div>
                 <div className="admin-product-price">{formatPrice(product.price)}</div>
@@ -257,22 +267,53 @@ export default function Admin() {
     )
   }
 
+  const handleImageUpload = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    if (file.size > 500000) {
+      showToast('Rasm 500KB dan kichik bo\'lishi kerak', 'error')
+      return
+    }
+    const reader = new FileReader()
+    reader.onload = (ev) => updateField('image', ev.target.result)
+    reader.readAsDataURL(file)
+  }
+
+  const removeImage = () => updateField('image', null)
+
   // Add/Edit form view
   if (view === 'form') {
     return (
-      <div className="page page-top-pad">
+      <div className="page page-top-pad" style={{ background: '#fdf8f3' }}>
         <div className="admin-topbar">
           <button className="admin-back-btn" onClick={() => setView('products')}>←</button>
-          <h2 className="admin-page-title">
+          <h2 className="admin-page-title" style={{ color: '#3a2e2e' }}>
             {editingProduct ? 'Mahsulotni tahrirlash' : 'Yangi mahsulot'}
           </h2>
           <div style={{ width: 36 }} />
         </div>
 
         <div className="admin-form">
-          {/* Emoji picker */}
-          <div className="admin-form-section">
-            <label className="admin-form-label">Emoji / Rasm</label>
+          {/* Image upload */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Rasm</label>
+            {formData.image ? (
+              <div style={{ position: 'relative', width: 120, height: 120 }}>
+                <img src={formData.image} alt="" style={{ width: 120, height: 120, objectFit: 'cover', borderRadius: 14, border: '2px solid #ecddd0' }} />
+                <button onClick={removeImage} style={{ position: 'absolute', top: -6, right: -6, width: 24, height: 24, borderRadius: '50%', border: 'none', background: '#e07070', color: '#fff', fontSize: 14, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✕</button>
+              </div>
+            ) : (
+              <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: 120, height: 120, borderRadius: 14, border: '2px dashed #ecddd0', background: '#fff', cursor: 'pointer', color: '#b3a59e', fontSize: 13 }}>
+                <span style={{ fontSize: 28, marginBottom: 4 }}>📷</span>
+                <span>Yuklash</span>
+                <input type="file" accept="image/*" onChange={handleImageUpload} style={{ display: 'none' }} />
+              </label>
+            )}
+          </div>
+
+          {/* Emoji fallback */}
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Emoji (rasm bo'lmasa)</label>
             <div className="admin-emoji-picker">
               {EMOJI_OPTIONS.map(e => (
                 <button
@@ -287,105 +328,56 @@ export default function Admin() {
           </div>
 
           {/* Names */}
-          <div className="admin-form-section">
-            <label className="admin-form-label">Nomi</label>
-            <div className="admin-form-group">
-              <div className="admin-input-row">
-                <span className="admin-input-tag">UZ</span>
-                <input
-                  type="text"
-                  className="admin-input"
-                  placeholder="O'zbekcha nomi"
-                  value={formData.name.uz}
-                  onChange={e => updateName('uz', e.target.value)}
-                />
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Nomi</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={S.tag}>UZ</span>
+                <input type="text" style={S.input} placeholder="O'zbekcha nomi" value={formData.name.uz} onChange={e => updateName('uz', e.target.value)} />
               </div>
-              <div className="admin-input-row">
-                <span className="admin-input-tag">RU</span>
-                <input
-                  type="text"
-                  className="admin-input"
-                  placeholder="Русское название"
-                  value={formData.name.ru}
-                  onChange={e => updateName('ru', e.target.value)}
-                />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={S.tag}>RU</span>
+                <input type="text" style={S.input} placeholder="Русское название" value={formData.name.ru} onChange={e => updateName('ru', e.target.value)} />
               </div>
-              <div className="admin-input-row">
-                <span className="admin-input-tag">EN</span>
-                <input
-                  type="text"
-                  className="admin-input"
-                  placeholder="English name"
-                  value={formData.name.en}
-                  onChange={e => updateName('en', e.target.value)}
-                />
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={S.tag}>EN</span>
+                <input type="text" style={S.input} placeholder="English name" value={formData.name.en} onChange={e => updateName('en', e.target.value)} />
               </div>
             </div>
           </div>
 
           {/* Descriptions */}
-          <div className="admin-form-section">
-            <label className="admin-form-label">Tavsifi</label>
-            <div className="admin-form-group">
-              <div className="admin-input-row">
-                <span className="admin-input-tag">UZ</span>
-                <textarea
-                  className="admin-textarea"
-                  placeholder="O'zbekcha tavsif"
-                  value={formData.desc.uz}
-                  onChange={e => updateDesc('uz', e.target.value)}
-                />
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Tavsifi</label>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <span style={{ ...S.tag, marginTop: 10 }}>UZ</span>
+                <textarea style={S.textarea} placeholder="O'zbekcha tavsif" value={formData.desc.uz} onChange={e => updateDesc('uz', e.target.value)} />
               </div>
-              <div className="admin-input-row">
-                <span className="admin-input-tag">RU</span>
-                <textarea
-                  className="admin-textarea"
-                  placeholder="Описание на русском"
-                  value={formData.desc.ru}
-                  onChange={e => updateDesc('ru', e.target.value)}
-                />
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <span style={{ ...S.tag, marginTop: 10 }}>RU</span>
+                <textarea style={S.textarea} placeholder="Описание на русском" value={formData.desc.ru} onChange={e => updateDesc('ru', e.target.value)} />
               </div>
-              <div className="admin-input-row">
-                <span className="admin-input-tag">EN</span>
-                <textarea
-                  className="admin-textarea"
-                  placeholder="English description"
-                  value={formData.desc.en}
-                  onChange={e => updateDesc('en', e.target.value)}
-                />
+              <div style={{ display: 'flex', alignItems: 'flex-start', gap: 8 }}>
+                <span style={{ ...S.tag, marginTop: 10 }}>EN</span>
+                <textarea style={S.textarea} placeholder="English description" value={formData.desc.en} onChange={e => updateDesc('en', e.target.value)} />
               </div>
             </div>
           </div>
 
           {/* Price */}
-          <div className="admin-form-section">
-            <label className="admin-form-label">Narxi</label>
-            <div className="admin-form-row">
-              <input
-                type="number"
-                className="admin-input"
-                placeholder="Narx (so'm)"
-                value={formData.price}
-                onChange={e => updateField('price', e.target.value)}
-              />
-              <input
-                type="number"
-                className="admin-input"
-                placeholder="Eski narx (ixtiyoriy)"
-                value={formData.oldPrice}
-                onChange={e => updateField('oldPrice', e.target.value)}
-              />
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Narxi</label>
+            <div style={{ display: 'flex', gap: 10 }}>
+              <input type="number" style={S.input} placeholder="Narx (so'm)" value={formData.price} onChange={e => updateField('price', e.target.value)} />
+              <input type="number" style={S.input} placeholder="Eski narx (ixtiyoriy)" value={formData.oldPrice} onChange={e => updateField('oldPrice', e.target.value)} />
             </div>
           </div>
 
           {/* Category */}
-          <div className="admin-form-section">
-            <label className="admin-form-label">Kategoriya</label>
-            <select
-              className="admin-select"
-              value={formData.category}
-              onChange={e => updateField('category', e.target.value)}
-            >
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Kategoriya</label>
+            <select className="admin-select" style={{ color: '#3a2e2e', background: '#fff' }} value={formData.category} onChange={e => updateField('category', e.target.value)}>
               {CATEGORIES.filter(c => c.id !== 'all').map(c => (
                 <option key={c.id} value={c.id}>{c.emoji} {c.name}</option>
               ))}
@@ -393,15 +385,11 @@ export default function Admin() {
           </div>
 
           {/* Badge */}
-          <div className="admin-form-section">
-            <label className="admin-form-label">Badge</label>
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Badge</label>
             <div className="admin-badge-picker">
               {['', 'new', 'sale'].map(b => (
-                <button
-                  key={b}
-                  className={`admin-badge-option${formData.badge === b ? ' active' : ''}`}
-                  onClick={() => updateField('badge', b)}
-                >
+                <button key={b} className={`admin-badge-option${formData.badge === b ? ' active' : ''}`} onClick={() => updateField('badge', b)}>
                   {b === '' ? 'Yo\'q' : b === 'new' ? 'NEW' : 'SALE'}
                 </button>
               ))}
@@ -409,33 +397,24 @@ export default function Admin() {
           </div>
 
           {/* Composition */}
-          <div className="admin-form-section">
-            <label className="admin-form-label">Tarkibi (vergul bilan)</label>
-            <textarea
-              className="admin-textarea"
-              placeholder="Masalan: Atirgul ×25, Gipsofila, Yashil barglar"
-              value={compositionInput}
-              onChange={e => setCompositionInput(e.target.value)}
-            />
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Tarkibi (vergul bilan)</label>
+            <textarea style={S.textarea} placeholder="Masalan: Atirgul ×25, Gipsofila, Yashil barglar" value={compositionInput} onChange={e => setCompositionInput(e.target.value)} />
           </div>
 
           {/* Flags */}
-          <div className="admin-form-section">
-            <label className="admin-form-label">Belgilar</label>
-            <div className="admin-flags">
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Belgilar</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
               {[
                 { key: 'featured', label: 'Tanlangan' },
                 { key: 'bestseller', label: 'Bestseller' },
                 { key: 'newArrival', label: 'Yangi' },
                 { key: 'seasonal', label: 'Mavsumiy' },
               ].map(flag => (
-                <label key={flag.key} className="admin-flag-item">
-                  <input
-                    type="checkbox"
-                    checked={formData[flag.key]}
-                    onChange={e => updateField(flag.key, e.target.checked)}
-                  />
-                  <span className="admin-flag-label">{flag.label}</span>
+                <label key={flag.key} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '10px 12px', background: formData[flag.key] ? '#f5d5d5' : '#fff', borderRadius: 8, border: formData[flag.key] ? '1.5px solid #e8a4a4' : '1.5px solid #ecddd0', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={formData[flag.key]} onChange={e => updateField(flag.key, e.target.checked)} style={{ accentColor: '#d4726f' }} />
+                  <span style={{ fontSize: 13, fontWeight: 500, color: '#3a2e2e' }}>{flag.label}</span>
                 </label>
               ))}
             </div>
