@@ -7,6 +7,6 @@ export default defineConfig({
   build: {
     outDir: 'docs',
     emptyOutDir: true,
-    target: 'es2015',
+    target: ['es2020', 'chrome64', 'safari12'],
   },
 })
