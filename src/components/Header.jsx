@@ -38,7 +38,7 @@ export default function Header({ onSearch }) {
             <div className="header-logo" style={{ flex: 1 }}>
               <img
                 className="logo-img"
-                src="./zoha-logo.png"
+                src="./zoha-logo.svg"
                 alt="logo"
                 onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'inline' }}
               />
