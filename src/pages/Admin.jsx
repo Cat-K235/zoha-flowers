@@ -270,13 +270,22 @@ export default function Admin() {
   const handleImageUpload = (e) => {
     const file = e.target.files[0]
     if (!file) return
-    if (file.size > 500000) {
-      showToast('Rasm 500KB dan kichik bo\'lishi kerak', 'error')
-      return
+    const img = new Image()
+    img.onload = () => {
+      const MAX = 600
+      let w = img.width, h = img.height
+      if (w > MAX || h > MAX) {
+        if (w > h) { h = Math.round(h * MAX / w); w = MAX }
+        else { w = Math.round(w * MAX / h); h = MAX }
+      }
+      const canvas = document.createElement('canvas')
+      canvas.width = w
+      canvas.height = h
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.75)
+      updateField('image', dataUrl)
     }
-    const reader = new FileReader()
-    reader.onload = (ev) => updateField('image', ev.target.result)
-    reader.readAsDataURL(file)
+    img.src = URL.createObjectURL(file)
   }
 
   const removeImage = () => updateField('image', null)
