@@ -146,7 +146,7 @@ html, body {
   font-family: var(--font-serif);
   font-size: 20px;
   font-weight: 500;
-  color: var(--color-text);
+  color: #3a2e2e;
   letter-spacing: 0.5px;
 }
 .header-title {
@@ -154,7 +154,7 @@ html, body {
   font-family: var(--font-serif);
   font-size: 18px;
   font-weight: 500;
-  color: var(--color-text);
+  color: #3a2e2e;
   text-align: center;
 }
 .header-actions {
@@ -169,7 +169,7 @@ html, body {
   border-radius: var(--radius-full);
   border: none;
   background: transparent;
-  color: var(--color-text-mid);
+  color: #7a6a65;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -185,8 +185,8 @@ html, body {
   height: 36px;
   border-radius: var(--radius-full);
   border: none;
-  background: var(--color-beige);
-  color: var(--color-text);
+  background: #f5ede0;
+  color: #3a2e2e;
   cursor: pointer;
   display: flex;
   align-items: center;
