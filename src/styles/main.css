@@ -145,16 +145,16 @@ html, body {
 .logo-text {
   font-family: var(--font-serif);
   font-size: 20px;
-  font-weight: 500;
-  color: #3a2e2e;
+  font-weight: 600;
+  color: #2a1f1f !important;
   letter-spacing: 0.5px;
 }
 .header-title {
   flex: 1;
   font-family: var(--font-serif);
   font-size: 18px;
-  font-weight: 500;
-  color: #3a2e2e;
+  font-weight: 600;
+  color: #2a1f1f !important;
   text-align: center;
 }
 .header-actions {
