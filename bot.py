@@ -18,10 +18,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BOT_TOKEN      = os.getenv("BOT_TOKEN")
-ADMIN_IDS      = [int(x) for x in os.getenv("ADMIN_IDS", "8748057822,7498042030").split(",")]
+BOT_TOKEN       = os.getenv("BOT_TOKEN")
+ADMIN_IDS       = [int(x) for x in os.getenv("ADMIN_IDS", "8748057822,7498042030").split(",")]
 MANAGER_CHAT_ID = os.getenv("MANAGER_CHAT_ID")
-WEBAPP_URL     = os.getenv("WEBAPP_URL", "https://cat-k235.github.io/zoha-flowers")
+WEBAPP_URL      = os.getenv("WEBAPP_URL", "https://cat-k235.github.io/zoha-flowers")
 
 pending_orders = {}
 
@@ -86,6 +86,8 @@ def get_manager_targets():
     if MANAGER_CHAT_ID:
         return [int(x) for x in MANAGER_CHAT_ID.split(",")]
     return ADMIN_IDS
+
+
 
 
 # ── Handlers ──────────────────────────────────────────────────────────────────
@@ -187,7 +189,8 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
                 parse_mode="Markdown",
                 reply_markup=confirm_reject_keyboard(order_id, chat_id, lang),
             )
-            if payment == "card" and screenshot:
+        if payment == "card" and screenshot:
+            for mgr_id in get_manager_targets():
                 await context.bot.send_photo(
                     chat_id=mgr_id,
                     photo=screenshot,
