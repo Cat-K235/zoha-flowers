@@ -7,6 +7,25 @@ const headers = {
   'Authorization': 'Bearer ' + SUPABASE_KEY,
 }
 
+export async function uploadPaymentScreenshot(file, orderId) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return null
+  const ext = file.name.split('.').pop() || 'jpg'
+  const path = `${orderId}-${Date.now()}.${ext}`
+  try {
+    const res = await fetch(`${SUPABASE_URL}/storage/v1/object/payments/${path}`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': file.type,
+      },
+      body: file,
+    })
+    if (!res.ok) return null
+    return `${SUPABASE_URL}/storage/v1/object/public/payments/${path}`
+  } catch { return null }
+}
+
 export const db = (SUPABASE_URL && SUPABASE_KEY) ? {
   async loadProducts() {
     try {

@@ -131,20 +131,20 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
         if data.get("type") != "order":
             return
 
-        order_id  = data.get("orderId", "N/A")
-        total     = data.get("total", 0)
-        address   = data.get("address", "—")
-        name      = data.get("recipientName", "—")
-        phone     = data.get("phone", "—")
-        date      = data.get("date", "—")
-        time_slot = data.get("time", "—")
-        payment   = data.get("payment", "cash")
-        greeting  = data.get("greeting", "")
-        notes     = data.get("notes", "")
-        items     = data.get("items", [])
-        lang      = data.get("lang", "uz")
-        # Fall back to the sender's id if Mini App didn't supply chatId
-        chat_id   = data.get("chatId") or update.effective_user.id
+        order_id    = data.get("orderId", "N/A")
+        total       = data.get("total", 0)
+        address     = data.get("address", "—")
+        name        = data.get("recipientName", "—")
+        phone       = data.get("phone", "—")
+        date        = data.get("date", "—")
+        time_slot   = data.get("time", "—")
+        payment     = data.get("payment", "cash")
+        greeting    = data.get("greeting", "")
+        notes       = data.get("notes", "")
+        items       = data.get("items", [])
+        lang        = data.get("lang", "uz")
+        screenshot  = data.get("paymentScreenshot", "")
+        chat_id     = data.get("chatId") or update.effective_user.id
 
         items_text = "\n".join(
             f"  • {item.get('name', '?')} ×{item.get('qty', 1)} — {item.get('price', 0):,} so'm"
@@ -187,9 +187,13 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
                 parse_mode="Markdown",
                 reply_markup=confirm_reject_keyboard(order_id, chat_id, lang),
             )
-
-        if payment == "card":
-            pending_orders[chat_id] = order_id
+            if payment == "card" and screenshot:
+                await context.bot.send_photo(
+                    chat_id=mgr_id,
+                    photo=screenshot,
+                    caption=f"💳 To'lov screenshoti — Buyurtma `#{order_id}`",
+                    parse_mode="Markdown",
+                )
 
         confirm_msgs = {
             "uz": f"✅ Buyurtmangiz qabul qilindi!\n\n📦 Raqam: #{order_id}\n🚚 Yetkazib berish: {date}, {time_slot}",
@@ -197,9 +201,6 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
             "en": f"✅ Your order has been received!\n\n📦 Order: #{order_id}\n🚚 Delivery: {date}, {time_slot}",
         }
         receipt = confirm_msgs.get(lang, confirm_msgs["uz"])
-        if payment == "card":
-            card_hint = {"uz": "\n\n💳 To'lov screenshotini yuboring.", "ru": "\n\n💳 Отправьте скриншот оплаты.", "en": "\n\n💳 Please send a payment screenshot."}
-            receipt += card_hint.get(lang, card_hint["uz"])
 
         await update.message.reply_text(receipt + "\n\nTez orada siz bilan bog'lanamiz! 🌸")
 
