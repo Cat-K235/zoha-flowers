@@ -7,6 +7,7 @@ import { useToast } from '../contexts/ToastContext'
 import { sendOrderToBot, haptic } from '../utils/telegram'
 
 const TIME_SLOTS = ['09:00-11:00', '11:00-13:00', '13:00-15:00', '15:00-17:00', '17:00-19:00', '19:00-21:00']
+const CARD_NUMBER = '9860 3501 4114 1845'
 
 export default function Checkout() {
   const navigate = useNavigate()
@@ -34,6 +35,18 @@ export default function Checkout() {
   const namePlaceholder  = lang === 'ru' ? 'Имя и фамилия' : lang === 'en' ? 'Full name' : 'Ism va familiya'
   const cardPlaceholder  = lang === 'ru' ? 'Введите текст открытки...' : lang === 'en' ? 'Enter your greeting message...' : "Tabriq so'zlaringizni kiriting..."
   const notesPlaceholder = lang === 'ru' ? 'Дополнительные пожелания...' : lang === 'en' ? 'Additional notes...' : "Qo'shimcha izoh..."
+
+  const [copied, setCopied] = useState(false)
+
+  const copyCard = () => {
+    navigator.clipboard.writeText(CARD_NUMBER.replace(/\s/g, '')).then(() => {
+      setCopied(true)
+      haptic.success?.()
+      setTimeout(() => setCopied(false), 2000)
+    }).catch(() => {
+      showToast('Copy failed', 'error')
+    })
+  }
 
   const errMsg = (key) => ({ uz: { addr: 'Manzilni kiriting', name: 'Ism kiriting', phone: 'Telefon raqamini kiriting' }, ru: { addr: 'Введите адрес', name: 'Введите имя', phone: 'Введите телефон' }, en: { addr: 'Enter delivery address', name: 'Enter recipient name', phone: 'Enter phone number' } }[lang] || {})[key]
 
@@ -120,6 +133,49 @@ export default function Checkout() {
           <button className={`time-slot${payment === 'cash' ? ' active' : ''}`} style={{ flex: 1 }} onClick={() => setPayment('cash')}>{t('checkout.cash')}</button>
           <button className={`time-slot${payment === 'card' ? ' active' : ''}`} style={{ flex: 1 }} onClick={() => setPayment('card')}>{t('checkout.card_pay')}</button>
         </div>
+        {payment === 'card' && (
+          <div style={{
+            marginTop: 12,
+            background: 'linear-gradient(135deg, #2a1f1f 0%, #4a3636 100%)',
+            borderRadius: 'var(--radius-lg)',
+            padding: '16px 20px',
+            color: '#fff',
+          }}>
+            <div style={{ fontSize: 11, opacity: 0.7, marginBottom: 4, textTransform: 'uppercase', letterSpacing: 1 }}>
+              {lang === 'ru' ? 'Переведите на карту' : lang === 'en' ? 'Transfer to card' : "Kartaga o'tkazing"}
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+              <span style={{ fontFamily: 'var(--font-mono, monospace)', fontSize: 18, letterSpacing: 2, fontWeight: 600 }}>
+                {CARD_NUMBER}
+              </span>
+              <button
+                onClick={copyCard}
+                style={{
+                  background: copied ? 'rgba(255,255,255,0.2)' : 'rgba(255,255,255,0.1)',
+                  border: 'none',
+                  color: '#fff',
+                  borderRadius: 'var(--radius-md)',
+                  padding: '6px 12px',
+                  fontSize: 12,
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {copied
+                  ? (lang === 'ru' ? 'Скопировано!' : lang === 'en' ? 'Copied!' : 'Nusxalandi!')
+                  : (lang === 'ru' ? 'Копировать' : lang === 'en' ? 'Copy' : 'Nusxalash')}
+              </button>
+            </div>
+            <div style={{ fontSize: 11, opacity: 0.6, marginTop: 8 }}>
+              {lang === 'ru'
+                ? 'Переведите сумму заказа, затем подтвердите'
+                : lang === 'en'
+                ? 'Transfer the order amount, then confirm'
+                : "Buyurtma summasini o'tkazing, keyin tasdiqlang"}
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Order summary */}
