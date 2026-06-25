@@ -985,11 +985,12 @@ html, body {
   height: 46px;
   border-radius: var(--radius-md);
   border: 1.5px solid var(--color-beige-mid);
-  background: var(--color-cream);
+  background: #fff !important;
   padding: 0 14px;
   font-size: 14px;
   font-family: var(--font-sans);
-  color: var(--color-text);
+  color: #2a1f1f !important;
+  -webkit-text-fill-color: #2a1f1f !important;
   outline: none;
   transition: border-color var(--transition);
   appearance: none;
@@ -1001,7 +1002,8 @@ html, body {
   min-height: 80px;
 }
 .form-input::placeholder, .form-textarea::placeholder {
-  color: #a89a95;
+  color: #a89a95 !important;
+  -webkit-text-fill-color: #a89a95 !important;
 }
 body.tg-dark .form-input, body.tg-dark .form-select, body.tg-dark .form-textarea {
   color: #f0e8e5 !important;
