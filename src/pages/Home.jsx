@@ -112,7 +112,7 @@ export default function Home() {
         <div style={{ margin: '0 16px', background: 'linear-gradient(135deg,var(--color-beige) 0%,var(--color-beige-mid) 100%)', borderRadius: 'var(--radius-xl)', padding: '20px 24px', textAlign: 'center' }}>
           <div style={{ fontSize: 28, marginBottom: 8 }}>📞</div>
           <div style={{ fontFamily: 'var(--font-serif)', fontSize: 18, marginBottom: 4 }}>+998 94 487 00 97</div>
-          <div style={{ fontSize: 12, color: 'var(--color-text-mid)', marginBottom: 16 }}>Telegram: @zohid7 • 24/7</div>
+          <div style={{ fontSize: 12, color: 'var(--color-text-mid)', marginBottom: 16 }}>Telegram: @Zoxaflowers • 24/7</div>
           <button
             className="btn-primary"
             style={{ width: '100%', maxWidth: 220, margin: '0 auto' }}

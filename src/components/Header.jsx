@@ -43,7 +43,7 @@ export default function Header({ onSearch }) {
                 onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'inline' }}
               />
               <span className="logo-icon" style={{ display: 'none' }}>🌸</span>
-              <span className="logo-text" style={{ color: '#2a1f1f', fontWeight: 600 }}>Zoha Flowers</span>
+              <span className="logo-text" style={{ color: '#2a1f1f', fontWeight: 600 }}>Zoxa Flowers</span>
             </div>
           ) : (
             <div className="header-title" style={{ flex: 1, color: '#2a1f1f', fontWeight: 600 }}>

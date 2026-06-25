@@ -10,7 +10,7 @@ Router.register('contacts', () => {
       <!-- Map / Store banner -->
       <div style="margin:0 16px 20px;background:linear-gradient(135deg,#3a2e2e 0%,#6b4c4c 100%);border-radius:var(--radius-xl);min-height:140px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;color:white;text-align:center;padding:24px">
         <div style="font-size:40px">🌸</div>
-        <div style="font-family:var(--font-serif);font-size:22px">Zoha Flowers</div>
+        <div style="font-family:var(--font-serif);font-size:22px">Zoxa Flowers</div>
         <div style="font-size:13px;opacity:0.8;letter-spacing:1px">PREMIUM FLOWER BOUTIQUE</div>
       </div>
 

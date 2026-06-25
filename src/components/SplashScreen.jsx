@@ -17,11 +17,11 @@ export default function SplashScreen({ onDone }) {
         <img
           className="splash-img"
           src="./zoha-logo.svg"
-          alt="Zoha Flowers"
+          alt="Zoxa Flowers"
           onError={e => { e.target.style.display = 'none'; e.target.nextSibling.style.display = 'block' }}
         />
         <span className="splash-icon" style={{ display: 'none' }}>🌸</span>
-        <h1 className="splash-title">Zoha Flowers</h1>
+        <h1 className="splash-title">Zoxa Flowers</h1>
         <p className="splash-subtitle">Premium Flower Boutique</p>
       </div>
     </div>

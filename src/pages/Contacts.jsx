@@ -15,8 +15,8 @@ export default function Contacts() {
     {
       icon: '✈️',
       label: t('contact.telegram'),
-      value: '@zohid7',
-      onClick: () => openTelegramLink('https://t.me/zohid7'),
+      value: '@Zoxaflowers',
+      onClick: () => openTelegramLink('https://t.me/Zoxaflowers'),
     },
     {
       icon: '🕐',
@@ -27,8 +27,8 @@ export default function Contacts() {
     {
       icon: '📍',
       label: 'Instagram',
-      value: '@zohaflowers',
-      onClick: () => openLink('https://instagram.com/zohaflowers'),
+      value: '@zoxaflowers',
+      onClick: () => openLink('https://instagram.com/zoxaflowers'),
     },
   ]
 
@@ -38,11 +38,11 @@ export default function Contacts() {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px 16px 8px' }}>
         <img
           src="./zoha-logo.svg"
-          alt="Zoha Flowers"
+          alt="Zoxa Flowers"
           style={{ width: 100, height: 100, objectFit: 'contain', borderRadius: 16, marginBottom: 12 }}
           onError={e => { e.target.style.display = 'none' }}
         />
-        <div style={{ fontFamily: 'var(--font-serif)', fontSize: 24, fontWeight: 400, marginBottom: 4 }}>Zoha Flowers</div>
+        <div style={{ fontFamily: 'var(--font-serif)', fontSize: 24, fontWeight: 400, marginBottom: 4 }}>Zoxa Flowers</div>
         <div style={{ fontSize: 12, color: 'var(--color-text-light)', letterSpacing: 2, textTransform: 'uppercase' }}>
           Premium Flower Boutique
         </div>

@@ -1,5 +1,5 @@
 """
-Zoha Flowers — Telegram Bot Backend
+Zoxa Flowers — Telegram Bot Backend
 Handles order notifications, status updates, and customer alerts.
 
 Install: pip install python-telegram-bot python-dotenv
@@ -73,10 +73,10 @@ def status_keyboard(order_id: str, chat_id, lang: str) -> InlineKeyboardMarkup:
 # ── Handlers ──────────────────────────────────────────────────────────────────
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    keyboard = [[InlineKeyboardButton("🌸 Zoha Flowers ni ochish", web_app=WebAppInfo(url=WEBAPP_URL))]]
+    keyboard = [[InlineKeyboardButton("🌸 Zoxa Flowers ni ochish", web_app=WebAppInfo(url=WEBAPP_URL))]]
     await update.message.reply_text(
         f"Assalomu alaykum, {update.effective_user.first_name}! 🌸\n\n"
-        "Zoha Flowers — eng go'zal gullar siz uchun!\n"
+        "Zoxa Flowers — eng go'zal gullar siz uchun!\n"
         "24/7 yetkazib berish xizmati.",
         reply_markup=InlineKeyboardMarkup(keyboard),
     )
@@ -86,7 +86,7 @@ async def admin_help(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if update.effective_user.id not in ADMIN_IDS:
         return
     await update.message.reply_text(
-        "🌸 *Zoha Flowers Bot — Admin*\n\n"
+        "🌸 *Zoxa Flowers Bot — Admin*\n\n"
         "/start — Botni ishga tushirish\n"
         "/stats — Statistika\n"
         "/help  — Ushbu yordam\n\n"
@@ -232,7 +232,7 @@ def main():
     app.add_handler(MessageHandler(filters.StatusUpdate.WEB_APP_DATA, handle_web_app_data))
     app.add_handler(CallbackQueryHandler(handle_status_update, pattern=r"^status_"))
 
-    logger.info("Zoha Flowers Bot starting...")
+    logger.info("Zoxa Flowers Bot starting...")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
