@@ -24,11 +24,11 @@ Router.register('contacts', () => {
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-light)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </a>
 
-        <div class="contact-card" onclick="TG.openTelegramLink('https://t.me/zohid7')">
+        <div class="contact-card" onclick="TG.openTelegramLink('https://t.me/Zoxaflowers')">
           <div class="contact-icon">✈️</div>
           <div>
             <div class="contact-label" data-i18n="contact.telegram">${I18n.t('contact.telegram')}</div>
-            <div class="contact-value">@zohid7</div>
+            <div class="contact-value">@Zoxaflowers</div>
           </div>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--color-text-light)" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg>
         </div>
@@ -61,8 +61,8 @@ Router.register('contacts', () => {
         <p style="font-size:13px;color:var(--color-text-mid);margin-bottom:16px;line-height:1.6">
           ${lang === 'uz' ? 'Telegram orqali bizga yozing — tez javob beramiz!' : lang === 'ru' ? 'Напишите нам в Telegram — ответим быстро!' : 'Message us on Telegram — we respond fast!'}
         </p>
-        <button class="btn-primary" style="width:100%" onclick="TG.openTelegramLink('https://t.me/zohid7')">
-          ✈️ Telegram: @zohid7
+        <button class="btn-primary" style="width:100%" onclick="TG.openTelegramLink('https://t.me/Zoxaflowers')">
+          ✈️ Telegram: @Zoxaflowers
         </button>
       </div>
       <div class="spacer-16"></div>

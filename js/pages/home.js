@@ -123,7 +123,7 @@ Router.register('home', () => {
         <div style="margin:0 16px;background:linear-gradient(135deg,var(--color-beige) 0%,var(--color-beige-mid) 100%);border-radius:var(--radius-xl);padding:20px 24px;text-align:center">
           <div style="font-size:28px;margin-bottom:8px">📞</div>
           <div style="font-family:var(--font-serif);font-size:18px;margin-bottom:4px">+998 94 487 00 97</div>
-          <div style="font-size:12px;color:var(--color-text-mid);margin-bottom:16px">Telegram: @zohid7 • 24/7</div>
+          <div style="font-size:12px;color:var(--color-text-mid);margin-bottom:16px">Telegram: @Zoxaflowers • 24/7</div>
           <button class="btn-primary" style="width:100%;max-width:220px;margin:0 auto" onclick="Router.navigate('contacts')">
             ${I18n.getLang() === 'uz' ? 'Aloqa' : I18n.getLang() === 'ru' ? 'Связаться' : 'Contact Us'}
           </button>
