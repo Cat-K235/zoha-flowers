@@ -1004,10 +1004,18 @@ html, body {
   color: #a89a95;
 }
 body.tg-dark .form-input, body.tg-dark .form-select, body.tg-dark .form-textarea {
-  color: #f0e8e5;
+  color: #f0e8e5 !important;
+  background: #2a2426 !important;
+  border-color: #4a4244 !important;
+  -webkit-text-fill-color: #f0e8e5 !important;
+}
+body.tg-dark .form-input:focus, body.tg-dark .form-select:focus, body.tg-dark .form-textarea:focus {
+  background: #322c2e !important;
+  border-color: var(--color-rose) !important;
 }
 body.tg-dark .form-input::placeholder, body.tg-dark .form-textarea::placeholder {
-  color: #6a5e5a;
+  color: #8a7e7a !important;
+  -webkit-text-fill-color: #8a7e7a !important;
 }
 .form-input:focus, .form-select:focus, .form-textarea:focus {
   border-color: var(--color-rose);
