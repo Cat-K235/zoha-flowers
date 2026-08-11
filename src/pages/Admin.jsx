@@ -45,6 +45,7 @@ export default function Admin() {
   const [editingProduct, setEditingProduct] = useState(null)
   const [formData, setFormData] = useState(EMPTY_PRODUCT)
   const [compositionInput, setCompositionInput] = useState('')
+  const [workingHours, setWorkingHours] = useState(() => localStorage.getItem('zf_working_hours') || '24/7')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
 
   useEffect(() => {
@@ -113,6 +114,7 @@ export default function Admin() {
       oldPrice: formData.oldPrice ? Number(formData.oldPrice) : null,
       badge: formData.badge || null,
       composition: compositionInput.split(',').map(s => s.trim()).filter(Boolean),
+      image: formData.image || null,
     }
 
     if (editingProduct) {
@@ -151,6 +153,7 @@ export default function Admin() {
       { icon: '📦', label: t('admin.products'), count: `${products.length}`, action: () => setView('products') },
       { icon: '🗂️', label: t('admin.categories'), count: `${CATEGORIES.length - 1}` },
       { icon: '📋', label: t('admin.orders'), count: `${orders.length}` },
+      { icon: '⏰', label: 'Ish vaqti', count: workingHours, action: () => setView('settings') },
       { icon: '⭐', label: t('admin.reviews'), count: '5' },
       { icon: '📊', label: t('admin.analytics'), count: '' },
       { icon: '🎁', label: t('admin.promo'), count: '3' },
@@ -290,7 +293,40 @@ export default function Admin() {
 
   const removeImage = () => updateField('image', null)
 
-  // Add/Edit form view
+  const saveWorkingHours = () => {
+    const value = workingHours.trim() || '24/7'
+    localStorage.setItem('zf_working_hours', value)
+    setWorkingHours(value)
+    showToast('Ish vaqti yangilandi ✓', 'success')
+  }
+
+  if (view === 'settings') {
+    return (
+      <div className="page page-top-pad" style={{ background: '#fdf8f3' }}>
+        <div className="admin-topbar">
+          <button className="admin-back-btn" onClick={() => setView('dashboard')}>←</button>
+          <h2 className="admin-page-title" style={{ color: '#3a2e2e' }}>Sozlamalar</h2>
+          <div style={{ width: 36 }} />
+        </div>
+        <div className="admin-form">
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Ish vaqti</label>
+            <input
+              type="text"
+              style={S.input}
+              placeholder="Masalan: 9:00–21:00"
+              value={workingHours}
+              onChange={e => setWorkingHours(e.target.value)}
+            />
+          </div>
+          <button className="admin-form-btn" onClick={saveWorkingHours} style={{ width: '100%' }}>
+            Saqlash
+          </button>
+        </div>
+      </div>
+    )
+  }
+
   if (view === 'form') {
     return (
       <div className="page page-top-pad" style={{ background: '#fdf8f3' }}>

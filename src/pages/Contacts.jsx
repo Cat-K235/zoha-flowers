@@ -5,6 +5,7 @@ import { openLink, openTelegramLink } from '../utils/telegram'
 export default function Contacts() {
   const { t } = useI18n()
 
+  const workingHours = localStorage.getItem('zf_working_hours') || t('contact.hours_val')
   const contacts = [
     {
       icon: '📞',
@@ -21,7 +22,7 @@ export default function Contacts() {
     {
       icon: '🕐',
       label: t('contact.hours'),
-      value: t('contact.hours_val'),
+      value: workingHours,
       onClick: null,
     },
     {

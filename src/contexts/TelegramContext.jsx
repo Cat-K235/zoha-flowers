@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { initTelegram, getTelegramUser, checkIsAdmin } from '../utils/telegram'
+import { initTelegram, getTelegramUser, checkIsAdmin, onInitDataChanged } from '../utils/telegram'
 
 const TelegramContext = createContext(null)
 
@@ -9,9 +9,14 @@ export function TelegramProvider({ children }) {
 
   useEffect(() => {
     initTelegram()
-    const u = getTelegramUser()
-    setUser(u)
-    if (u) setIsAdmin(checkIsAdmin(u.id))
+    const syncUser = () => {
+      const u = getTelegramUser()
+      setUser(u)
+      setIsAdmin(u ? checkIsAdmin(u.id) : false)
+    }
+    syncUser()
+    const unsubscribe = onInitDataChanged(syncUser)
+    return () => { if (typeof unsubscribe === 'function') unsubscribe() }
   }, [])
 
   return (

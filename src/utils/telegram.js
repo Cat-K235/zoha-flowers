@@ -23,6 +23,12 @@ export function checkIsAdmin(userId) {
   return ADMIN_USER_IDS.includes(userId)
 }
 
+export function onInitDataChanged(handler) {
+  if (!tg || !tg.onEvent) return
+  tg.onEvent('initDataChanged', handler)
+  return () => tg?.offEvent?.('initDataChanged', handler)
+}
+
 export const haptic = {
   light:   () => tg?.HapticFeedback?.impactOccurred('light'),
   medium:  () => tg?.HapticFeedback?.impactOccurred('medium'),
