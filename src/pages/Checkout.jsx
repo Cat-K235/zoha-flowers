@@ -7,7 +7,6 @@ import { useToast } from '../contexts/ToastContext'
 import { sendOrderToBot, haptic } from '../utils/telegram'
 import { uploadPaymentScreenshot } from '../utils/supabase'
 
-const TIME_SLOTS = ['09:00-11:00', '11:00-13:00', '13:00-15:00', '15:00-17:00', '17:00-19:00', '19:00-21:00']
 const CARD_NUMBER = '9860 3501 4114 1845'
 
 export default function Checkout() {
@@ -19,7 +18,7 @@ export default function Checkout() {
 
   const today = new Date().toISOString().split('T')[0]
   const [date, setDate] = useState(today)
-  const [time, setTime] = useState(TIME_SLOTS[0])
+  const [time, setTime] = useState('')
   const [address, setAddress] = useState('')
   const [name, setName] = useState(user ? `${user.first_name || ''} ${user.last_name || ''}`.trim() : '')
   const [phone, setPhone] = useState('')
@@ -67,12 +66,13 @@ export default function Checkout() {
     setScreenshotPreview(null)
   }
 
-  const errMsg = (key) => ({ uz: { addr: 'Manzilni kiriting', name: 'Ism kiriting', phone: 'Telefon raqamini kiriting' }, ru: { addr: 'Введите адрес', name: 'Введите имя', phone: 'Введите телефон' }, en: { addr: 'Enter delivery address', name: 'Enter recipient name', phone: 'Enter phone number' } }[lang] || {})[key]
+  const errMsg = (key) => ({ uz: { addr: 'Manzilni kiriting', name: 'Ism kiriting', phone: 'Telefon raqamini kiriting', time: 'Kelish vaqti kiriting' }, ru: { addr: 'Введите адрес', name: 'Введите имя', phone: 'Введите телефон', time: 'Введите время доставки' }, en: { addr: 'Enter delivery address', name: 'Enter recipient name', phone: 'Enter phone number', time: 'Enter delivery time' } }[lang] || {})[key]
 
   const submit = async () => {
     if (!address.trim()) { showToast(errMsg('addr'), 'error'); haptic.error?.(); return }
     if (!name.trim())    { showToast(errMsg('name'), 'error'); haptic.error?.(); return }
     if (!phone.trim())   { showToast(errMsg('phone'), 'error'); haptic.error?.(); return }
+    if (!time.trim())    { showToast(errMsg('time'), 'error'); haptic.error?.(); return }
     if (payment === 'card' && !screenshot) {
       const msg = lang === 'ru' ? 'Загрузите скриншот оплаты' : lang === 'en' ? 'Upload payment screenshot' : "To'lov screenshotini yuklang"
       showToast(msg, 'error'); haptic.error?.(); return
@@ -121,11 +121,13 @@ export default function Checkout() {
         </div>
         <div className="form-group">
           <label className="form-label">{t('checkout.time')}</label>
-          <div className="time-slots">
-            {TIME_SLOTS.map(slot => (
-              <button key={slot} className={`time-slot${time === slot ? ' active' : ''}`} onClick={() => setTime(slot)}>{slot}</button>
-            ))}
-          </div>
+          <input
+            className="form-input"
+            type="text"
+            value={time}
+            placeholder={lang === 'ru' ? 'Например: 18:30' : lang === 'en' ? 'e.g. 18:30' : "Masalan: 18:30"}
+            onChange={e => setTime(e.target.value)}
+          />
         </div>
         <div className="form-group">
           <label className="form-label">{t('checkout.address')}</label>
