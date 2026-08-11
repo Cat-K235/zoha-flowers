@@ -7,8 +7,6 @@ Router.register('checkout', () => {
   const user = TG.getUser();
   const today = new Date().toISOString().split('T')[0];
 
-  const timeSlots = ['09:00-11:00', '11:00-13:00', '13:00-15:00', '15:00-17:00', '17:00-19:00', '19:00-21:00'];
-
   return `
     <div class="page page-top-pad">
       <!-- Delivery section -->
@@ -20,11 +18,7 @@ Router.register('checkout', () => {
         </div>
         <div class="form-group">
           <label class="form-label" data-i18n="checkout.time">${I18n.t('checkout.time')}</label>
-          <div class="time-slots" id="time-slots">
-            ${timeSlots.map((t, i) => `
-              <button class="time-slot ${i === 0 ? 'active' : ''}" onclick="selectTimeSlot(this, '${t}')">${t}</button>
-            `).join('')}
-          </div>
+          <input class="form-input" type="text" id="delivery-time" placeholder="${I18n.getLang() === 'uz' ? 'Masalan: 18:30' : I18n.getLang() === 'ru' ? 'Например: 18:30' : 'e.g. 18:30'}" />
         </div>
         <div class="form-group">
           <label class="form-label" data-i18n="checkout.address">${I18n.t('checkout.address')}</label>
@@ -108,15 +102,8 @@ Router.register('checkout', () => {
     </div>`;
 });
 
-let selectedTime = '09:00-11:00';
+let selectedTime = '';
 let selectedPayment = 'cash';
-
-function selectTimeSlot(btn, time) {
-  selectedTime = time;
-  document.querySelectorAll('#time-slots .time-slot').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  TG.haptic.light();
-}
 
 function selectPayment(method, btn) {
   selectedPayment = method;
@@ -154,8 +141,15 @@ function submitOrder() {
 
   const orderId = 'ZF-' + Date.now().toString().slice(-6);
   const date = document.getElementById('delivery-date')?.value;
+  const time = document.getElementById('delivery-time')?.value.trim();
   const greeting = document.getElementById('greeting-card')?.value;
   const notes = document.getElementById('order-notes')?.value;
+
+  if (!time) {
+    Toast.show(I18n.getLang() === 'uz' ? 'Kelish vaqtini kiriting' : I18n.getLang() === 'ru' ? 'Введите время доставки' : 'Enter delivery time', 'error');
+    TG.haptic.error();
+    return;
+  }
 
   const orderData = {
     orderId,
@@ -170,7 +164,7 @@ function submitOrder() {
     recipientName: name,
     phone,
     date,
-    time: selectedTime,
+    time,
     payment: selectedPayment,
     greeting,
     notes,
