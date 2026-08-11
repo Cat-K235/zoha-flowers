@@ -254,6 +254,13 @@ async def handle_delivery_update(data: dict, update: Update, context: ContextTyp
         "en": f"📣 Update for order #{order_id}:\n📅 Delivery: {delivery}",
     }.get(lang, f"📣 Update for order #{order_id}:\n📅 Delivery: {delivery}")
 
+    accepted_time = data.get("acceptedTime")
+    delivered_time = data.get("deliveredTime")
+    if accepted_time:
+        msg += f"\n✅ Qabul vaqti: {accepted_time}"
+    if delivered_time:
+        msg += f"\n📦 Yetkazib berilgan vaqt: {delivered_time}"
+
     if custom:
         msg += f"\n\n{custom}"
 

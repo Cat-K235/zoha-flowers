@@ -48,9 +48,8 @@ export default function Admin() {
   const [workingHours, setWorkingHours] = useState(() => localStorage.getItem('zf_working_hours') || '24/7')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
   const [deliveryOrderId, setDeliveryOrderId] = useState('')
-  const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString().split('T')[0])
-  const [deliveryTime, setDeliveryTime] = useState('09:00-11:00')
-  const [deliveryMessage, setDeliveryMessage] = useState('')
+  const [acceptedTime, setAcceptedTime] = useState('')
+  const [deliveredTime, setDeliveredTime] = useState('')
 
   useEffect(() => {
     const editId = searchParams.get('edit')
@@ -71,7 +70,7 @@ export default function Admin() {
     }
   }, [searchParams])
 
-  const orders = JSON.parse(localStorage.getItem('zf_orders') || '[]')
+  const [orders, setOrders] = useState(() => JSON.parse(localStorage.getItem('zf_orders') || '[]'))
   const todayTotal = orders.filter(o => o.date === new Date().toISOString().split('T')[0]).reduce((s, o) => s + o.total, 0)
 
   if (!isAdmin) {
@@ -158,7 +157,7 @@ export default function Admin() {
       { icon: '🗂️', label: t('admin.categories'), count: `${CATEGORIES.length - 1}` },
       { icon: '📋', label: t('admin.orders'), count: `${orders.length}` },
       { icon: '⏰', label: 'Ish vaqti', count: workingHours, action: () => setView('settings') },
-      { icon: '🕒', label: 'Yuk tashish', count: orders.length ? `${orders.length}` : '—', action: () => setView('delivery') },
+      { icon: '🕒', label: 'Yetkazib berish vaqtları', count: orders.length ? `${orders.length}` : '—', action: () => setView('delivery') },
       { icon: '⭐', label: t('admin.reviews'), count: '5' },
       { icon: '📊', label: t('admin.analytics'), count: '' },
       { icon: '🎁', label: t('admin.promo'), count: '3' },
@@ -210,6 +209,15 @@ export default function Admin() {
                     <span style={{ fontFamily: 'var(--font-serif)', color: 'var(--color-rose-dark)', fontWeight: 600 }}>
                       {formatPrice(o.total)}
                     </span>
+                  </div>
+                  <div style={{ marginTop: 12, display: 'flex', justifyContent: 'flex-end' }}>
+                    <button
+                      className="admin-action-btn edit"
+                      onClick={() => { setDeliveryOrderId(o.orderId); setView('delivery') }}
+                      style={{ minWidth: 120 }}
+                    >
+                      🕒 Yetkazib berish
+                    </button>
                   </div>
                 </div>
               ))}
@@ -305,9 +313,9 @@ export default function Admin() {
     showToast('Ish vaqti yangilandi ✓', 'success')
   }
 
-  const deliveryOrders = orders.filter(o => o.chatId)
+  const deliveryOrders = orders
 
-  const sendDeliveryUpdate = () => {
+  const saveDeliveryTimes = () => {
     if (!deliveryOrderId) {
       showToast('Buyurtma tanlang', 'error')
       return
@@ -318,16 +326,27 @@ export default function Admin() {
       return
     }
 
-    const payload = {
-      orderId: selected.orderId,
-      chatId: selected.chatId,
-      lang: selected.lang || 'uz',
-      delivery: `${deliveryDate} ${deliveryTime}`,
-      message: deliveryMessage,
+    const updated = {
+      ...selected,
+      acceptedTime: acceptedTime || selected.acceptedTime || '',
+      deliveredTime: deliveredTime || selected.deliveredTime || '',
     }
 
-    sendDeliveryUpdateToBot(payload)
-    showToast('Yetkazib berish yangilandi yuborildi ✓', 'success')
+    const nextOrders = orders.map(o => o.orderId === selected.orderId ? updated : o)
+    setOrders(nextOrders)
+    localStorage.setItem('zf_orders', JSON.stringify(nextOrders))
+
+    if (selected.chatId) {
+      sendDeliveryUpdateToBot({
+        orderId: selected.orderId,
+        chatId: selected.chatId,
+        lang: selected.lang || 'uz',
+        acceptedTime: updated.acceptedTime,
+        deliveredTime: updated.deliveredTime,
+      })
+    }
+
+    showToast('Yetkazib berish vaqtları saqlandi ✓', 'success')
     haptic.success?.()
   }
 
@@ -373,7 +392,13 @@ export default function Admin() {
             <select
               style={S.input}
               value={deliveryOrderId}
-              onChange={e => setDeliveryOrderId(e.target.value)}
+              onChange={e => {
+                const orderId = e.target.value
+                setDeliveryOrderId(orderId)
+                const selected = deliveryOrders.find(order => order.orderId === orderId)
+                setAcceptedTime(selected?.acceptedTime || '')
+                setDeliveredTime(selected?.deliveredTime || '')
+              }}
             >
               <option value="">Tanlang</option>
               {deliveryOrders.map(order => (
@@ -386,39 +411,27 @@ export default function Admin() {
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
             <div>
-              <label style={S.label}>Sana</label>
+              <label style={S.label}>Qabul qilingan vaqt</label>
               <input
-                type="date"
+                type="time"
                 style={S.input}
-                value={deliveryDate}
-                onChange={e => setDeliveryDate(e.target.value)}
+                value={acceptedTime}
+                onChange={e => setAcceptedTime(e.target.value)}
               />
             </div>
             <div>
-              <label style={S.label}>Vaqt</label>
+              <label style={S.label}>Yetkazilgan vaqt</label>
               <input
-                type="text"
+                type="time"
                 style={S.input}
-                value={deliveryTime}
-                placeholder="09:00-11:00"
-                onChange={e => setDeliveryTime(e.target.value)}
+                value={deliveredTime}
+                onChange={e => setDeliveredTime(e.target.value)}
               />
             </div>
           </div>
 
-          <div style={{ marginBottom: 20 }}>
-            <label style={S.label}>Xabar</label>
-            <textarea
-              style={S.textarea}
-              rows={4}
-              value={deliveryMessage}
-              placeholder="Qo'shimcha ma'lumot yoki mijozga xabar"
-              onChange={e => setDeliveryMessage(e.target.value)}
-            />
-          </div>
-
-          <button className="admin-form-btn" onClick={sendDeliveryUpdate} style={{ width: '100%' }}>
-            Yangilashni yuborish
+          <button className="admin-form-btn" onClick={saveDeliveryTimes} style={{ width: '100%' }}>
+            Saqlash
           </button>
         </div>
       </div>
