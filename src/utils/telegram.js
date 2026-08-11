@@ -45,6 +45,17 @@ export function sendOrderToBot(orderData) {
   tg.sendData(data)
 }
 
+export function sendDeliveryUpdateToBot(updateData) {
+  if (!tg) return
+  const data = JSON.stringify({ type: 'delivery_update', ...updateData })
+  tg.sendData(data)
+}
+
+export function sendWebAppData(payload) {
+  if (!tg) return
+  tg.sendData(JSON.stringify(payload))
+}
+
 export function openLink(url) {
   if (tg) { tg.openLink(url) } else { window.open(url, '_blank') }
 }

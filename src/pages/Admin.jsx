@@ -5,7 +5,7 @@ import { useTelegram } from '../contexts/TelegramContext'
 import { useProducts } from '../contexts/ProductContext'
 import { useToast } from '../contexts/ToastContext'
 import { CATEGORIES } from '../data/products'
-import { haptic } from '../utils/telegram'
+import { haptic, sendDeliveryUpdateToBot } from '../utils/telegram'
 
 const EMPTY_PRODUCT = {
   name: { uz: '', ru: '', en: '' },
@@ -47,6 +47,10 @@ export default function Admin() {
   const [compositionInput, setCompositionInput] = useState('')
   const [workingHours, setWorkingHours] = useState(() => localStorage.getItem('zf_working_hours') || '24/7')
   const [deleteConfirm, setDeleteConfirm] = useState(null)
+  const [deliveryOrderId, setDeliveryOrderId] = useState('')
+  const [deliveryDate, setDeliveryDate] = useState(new Date().toISOString().split('T')[0])
+  const [deliveryTime, setDeliveryTime] = useState('09:00-11:00')
+  const [deliveryMessage, setDeliveryMessage] = useState('')
 
   useEffect(() => {
     const editId = searchParams.get('edit')
@@ -154,6 +158,7 @@ export default function Admin() {
       { icon: '🗂️', label: t('admin.categories'), count: `${CATEGORIES.length - 1}` },
       { icon: '📋', label: t('admin.orders'), count: `${orders.length}` },
       { icon: '⏰', label: 'Ish vaqti', count: workingHours, action: () => setView('settings') },
+      { icon: '🕒', label: 'Yuk tashish', count: orders.length ? `${orders.length}` : '—', action: () => setView('delivery') },
       { icon: '⭐', label: t('admin.reviews'), count: '5' },
       { icon: '📊', label: t('admin.analytics'), count: '' },
       { icon: '🎁', label: t('admin.promo'), count: '3' },
@@ -300,6 +305,32 @@ export default function Admin() {
     showToast('Ish vaqti yangilandi ✓', 'success')
   }
 
+  const deliveryOrders = orders.filter(o => o.chatId)
+
+  const sendDeliveryUpdate = () => {
+    if (!deliveryOrderId) {
+      showToast('Buyurtma tanlang', 'error')
+      return
+    }
+    const selected = deliveryOrders.find(o => o.orderId === deliveryOrderId)
+    if (!selected) {
+      showToast('Buyurtma topilmadi', 'error')
+      return
+    }
+
+    const payload = {
+      orderId: selected.orderId,
+      chatId: selected.chatId,
+      lang: selected.lang || 'uz',
+      delivery: `${deliveryDate} ${deliveryTime}`,
+      message: deliveryMessage,
+    }
+
+    sendDeliveryUpdateToBot(payload)
+    showToast('Yetkazib berish yangilandi yuborildi ✓', 'success')
+    haptic.success?.()
+  }
+
   if (view === 'settings') {
     return (
       <div className="page page-top-pad" style={{ background: '#fdf8f3' }}>
@@ -321,6 +352,73 @@ export default function Admin() {
           </div>
           <button className="admin-form-btn" onClick={saveWorkingHours} style={{ width: '100%' }}>
             Saqlash
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  if (view === 'delivery') {
+    return (
+      <div className="page page-top-pad" style={{ background: '#fdf8f3' }}>
+        <div className="admin-topbar">
+          <button className="admin-back-btn" onClick={() => setView('dashboard')}>←</button>
+          <h2 className="admin-page-title" style={{ color: '#3a2e2e' }}>Yetkazib berish yangilash</h2>
+          <div style={{ width: 36 }} />
+        </div>
+
+        <div className="admin-form">
+          <div style={{ marginBottom: 16 }}>
+            <label style={S.label}>Buyurtma</label>
+            <select
+              style={S.input}
+              value={deliveryOrderId}
+              onChange={e => setDeliveryOrderId(e.target.value)}
+            >
+              <option value="">Tanlang</option>
+              {deliveryOrders.map(order => (
+                <option key={order.orderId} value={order.orderId}>
+                  {order.orderId} • {order.recipientName || order.phone} • {order.date}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginBottom: 16 }}>
+            <div>
+              <label style={S.label}>Sana</label>
+              <input
+                type="date"
+                style={S.input}
+                value={deliveryDate}
+                onChange={e => setDeliveryDate(e.target.value)}
+              />
+            </div>
+            <div>
+              <label style={S.label}>Vaqt</label>
+              <input
+                type="text"
+                style={S.input}
+                value={deliveryTime}
+                placeholder="09:00-11:00"
+                onChange={e => setDeliveryTime(e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div style={{ marginBottom: 20 }}>
+            <label style={S.label}>Xabar</label>
+            <textarea
+              style={S.textarea}
+              rows={4}
+              value={deliveryMessage}
+              placeholder="Qo'shimcha ma'lumot yoki mijozga xabar"
+              onChange={e => setDeliveryMessage(e.target.value)}
+            />
+          </div>
+
+          <button className="admin-form-btn" onClick={sendDeliveryUpdate} style={{ width: '100%' }}>
+            Yangilashni yuborish
           </button>
         </div>
       </div>

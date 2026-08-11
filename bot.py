@@ -24,6 +24,7 @@ MANAGER_CHAT_ID = os.getenv("MANAGER_CHAT_ID")
 WEBAPP_URL      = os.getenv("WEBAPP_URL", "https://cat-k235.github.io/zoha-flowers")
 
 pending_orders = {}
+order_meta = {}
 
 logging.basicConfig(
     level=logging.INFO,
@@ -63,13 +64,22 @@ CUSTOMER_MSGS = {
 
 # ── Helpers ───────────────────────────────────────────────────────────────────
 
+def order_delivery_label(lang: str) -> str:
+    return {
+        "uz": "📅 Yetkazib berish vaqti",
+        "ru": "📅 Время доставки",
+        "en": "📅 Delivery time",
+    }.get(lang, "📅 Delivery time")
+
+
 def status_keyboard(order_id: str, chat_id, lang: str) -> InlineKeyboardMarkup:
-    """Build 2×2 status button grid. callback_data: status_{id}_{n}_{chat_id}_{lang}"""
+    """Build 2×2 status button grid plus a delivery notification button."""
     def btn(label: str, n: int) -> InlineKeyboardButton:
         return InlineKeyboardButton(label, callback_data=f"status_{order_id}_{n}_{chat_id}_{lang}")
     return InlineKeyboardMarkup([
         [btn("📋 Qabul",        0), btn("🌸 Tayyorlanmoqda", 1)],
         [btn("🚴 Kuryer yo'lda", 2), btn("✅ Yetkazildi",      3)],
+        [InlineKeyboardButton("🕒 Yetkazib berish", callback_data=f"notify_{order_id}_{chat_id}_{lang}")],
     ])
 
 
@@ -130,7 +140,12 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
     """Receive order JSON from the Mini App, forward to admin, confirm to customer."""
     try:
         data = json.loads(update.message.web_app_data.data)
-        if data.get("type") != "order":
+        message_type = data.get("type")
+        if message_type == "delivery_update":
+            await handle_delivery_update(data, update, context)
+            return
+
+        if message_type != "order":
             return
 
         order_id    = data.get("orderId", "N/A")
@@ -198,6 +213,13 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
                     parse_mode="Markdown",
                 )
 
+        # Store order metadata so we can notify the customer later with delivery details
+        order_meta[order_id] = {
+            "chat_id": chat_id,
+            "lang": lang,
+            "delivery": f"{date} {time}",
+        }
+
         confirm_msgs = {
             "uz": f"✅ Buyurtmangiz qabul qilindi!\n\n📦 Raqam: #{order_id}\n🚚 Yetkazib berish: {date}, {time_slot}",
             "ru": f"✅ Ваш заказ принят!\n\n📦 Номер: #{order_id}\n🚚 Доставка: {date}, {time_slot}",
@@ -206,13 +228,45 @@ async def handle_web_app_data(update: Update, context: ContextTypes.DEFAULT_TYPE
         receipt = confirm_msgs.get(lang, confirm_msgs["uz"])
 
         await update.message.reply_text(receipt + "\n\nTez orada siz bilan bog'lanamiz! 🌸")
-
         logger.info("New order #%s from user %s (chat_id=%s)", order_id, user.id, chat_id)
 
     except json.JSONDecodeError:
         logger.error("Invalid JSON from WebApp")
     except Exception as exc:
         logger.error("Error handling order: %s", exc)
+
+
+async def handle_delivery_update(data: dict, update: Update, context: ContextTypes.DEFAULT_TYPE):
+    order_id = data.get("orderId")
+    chat_id  = data.get("chatId")
+    lang     = data.get("lang", "uz")
+    delivery = data.get("delivery") or order_meta.get(order_id, {}).get("delivery")
+    custom   = data.get("message", "")
+
+    if not order_id or not chat_id or not delivery:
+        return
+
+    order_meta.setdefault(order_id, {})["delivery"] = delivery
+
+    msg = {
+        "uz": f"📣 Buyurtmangiz #{order_id} uchun yangilanish:\n📅 Yetkazib berish: {delivery}",
+        "ru": f"📣 Обновление по заказу #{order_id}:\n📅 Доставка: {delivery}",
+        "en": f"📣 Update for order #{order_id}:\n📅 Delivery: {delivery}",
+    }.get(lang, f"📣 Update for order #{order_id}:\n📅 Delivery: {delivery}")
+
+    if custom:
+        msg += f"\n\n{custom}"
+
+    try:
+        await context.bot.send_message(chat_id=chat_id, text=msg)
+    except Exception as exc:
+        logger.warning("Could not notify customer %s: %s", chat_id, exc)
+
+    if update.message:
+        try:
+            await update.message.reply_text("Yetkazib berish vaqti yuborildi. 🌸")
+        except Exception:
+            pass
 
 
 async def handle_payment_photo(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -333,6 +387,9 @@ async def handle_status_update(update: Update, context: ContextTypes.DEFAULT_TYP
     if chat_id:
         msgs = CUSTOMER_MSGS.get(lang, CUSTOMER_MSGS["uz"])
         msg  = msgs.get(new_status, "").replace("{id}", order_id)
+        note = delivery_note(order_id, lang)
+        if note:
+            msg += f"\n\n{note}"
         if msg:
             try:
                 await context.bot.send_message(chat_id=chat_id, text=msg)
@@ -340,6 +397,39 @@ async def handle_status_update(update: Update, context: ContextTypes.DEFAULT_TYP
                 logger.warning("Could not notify customer %s: %s", chat_id, exc)
 
     logger.info("Order #%s status → %s", order_id, new_status)
+
+
+async def handle_notify_delivery(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    query = update.callback_query
+
+    if query.from_user.id not in ADMIN_IDS:
+        await query.answer("Ruxsat yo'q!", show_alert=True)
+        return
+
+    await query.answer()
+
+    parts = query.data.split("_")
+    if len(parts) < 2 or parts[0] != "notify":
+        return
+
+    order_id = parts[1]
+    chat_id  = int(parts[2]) if len(parts) > 2 else None
+    lang     = parts[3] if len(parts) > 3 else "uz"
+    note     = delivery_note(order_id, lang)
+
+    if note and chat_id:
+        msg = {
+            "uz": f"📣 Buyurtmangiz #{order_id} haqida yangilanish:\n{note}",
+            "ru": f"📣 Обновление по вашему заказу #{order_id}:\n{note}",
+            "en": f"📣 Update for your order #{order_id}:\n{note}",
+        }.get(lang, f"📣 Update for your order #{order_id}:\n{note}")
+        try:
+            await context.bot.send_message(chat_id=chat_id, text=msg)
+        except Exception as exc:
+            logger.warning("Could not notify customer %s: %s", chat_id, exc)
+
+    await query.answer("Yetkazib berish vaqti yuborildi.")
+    logger.info("Delivery note sent for order #%s", order_id)
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
@@ -354,6 +444,7 @@ def main():
     app.add_handler(MessageHandler(filters.PHOTO & ~filters.StatusUpdate.WEB_APP_DATA, handle_payment_photo))
     app.add_handler(CallbackQueryHandler(handle_confirm_reject, pattern=r"^(confirm|reject)_"))
     app.add_handler(CallbackQueryHandler(handle_status_update, pattern=r"^status_"))
+    app.add_handler(CallbackQueryHandler(handle_notify_delivery, pattern=r"^notify_"))
 
     logger.info("Zoxa Flowers Bot starting...")
     app.run_polling(allowed_updates=Update.ALL_TYPES)
